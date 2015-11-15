@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="484a312e-1977-44a5-a21c-da2b326ecaa6" name="Default" comment="GUI mockup working">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/Window.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jms/Main.java" afterPath="$PROJECT_DIR$/src/com/jms/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+    <list default="true" id="484a312e-1977-44a5-a21c-da2b326ecaa6" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="player.iws" />
@@ -416,12 +413,19 @@
       <option name="number" value="Default" />
       <updated>1447344077224</updated>
       <workItem from="1447344080218" duration="599000" />
-      <workItem from="1447587947588" duration="6015000" />
+      <workItem from="1447587947588" duration="6089000" />
     </task>
+    <task id="LOCAL-00001" summary="GUI mockup working">
+      <created>1447620594592</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1447620594592</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6614000" />
+    <option name="totallyTimeSpent" value="6688000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1920" height="1055" extended-state="0" />
