@@ -1,11 +1,17 @@
 package com.jms;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by jakub on 15.11.15.
  */
-public class MainWindow extends JPanel{
+public class MainWindow extends JPanel
+{
+    private final static String PLAYLIST_PANEL = "Playlist";
+    private final static String EDITOR_PANEL = "Editor";
+
     // Playback toolbar
     JToolBar playbackToolbar;
     JButton playButton;
@@ -15,27 +21,45 @@ public class MainWindow extends JPanel{
     JButton prevButton;
     JButton randomButton;
     JButton loadButton;
-
-
-
     // Switch-to-edit button
     JButton editButton;
+
+    // Panels
+    JPanel mainPanel;
+    JPanel editPanel;
+    JPanel playlistPanel;
+
+    // Playlist widget
     JList playList;
 
-    public MainWindow(){
+    public MainWindow()
+    {
         // Superclass constructor call
         super(new BorderLayout());
         // Setup toolbar
         setupPlaybackButtons();
-        playList = new JList();
+
+        // Setup main panel with card layout
+        mainPanel = new JPanel(new CardLayout());
+
+        editPanel = new JPanel();
+        playlistPanel = new JPanel();
+
 //        this.setLayout(new BorderLayout());
         this.add(playbackToolbar, BorderLayout.NORTH);
-        this.add(playList, BorderLayout.CENTER);
+        this.add(mainPanel, BorderLayout.CENTER);
 
+
+        playList = new JList();
+
+
+        mainPanel.add(playList, PLAYLIST_PANEL);
+        mainPanel.add(editPanel, EDITOR_PANEL);
 
     }
 
-    private void setupPlaybackButtons(){
+    private void setupPlaybackButtons()
+    {
         playButton = new JButton("Play");
         playButton.setToolTipText("Play");
 
@@ -74,9 +98,15 @@ public class MainWindow extends JPanel{
         playbackToolbar.addSeparator();
         playbackToolbar.add(editButton);
 
+        editButton.addActionListener(e ->
+        {
+            CardLayout cl = (CardLayout) mainPanel.getLayout();
+            cl.show(mainPanel, EDITOR_PANEL);
+        });
     }
 
-    public static void makeGUI(){
+    public static void makeGUI()
+    {
         JFrame frame = new JFrame("jTunes");
         JComponent contentPane = new MainWindow();
         contentPane.setOpaque(true);
