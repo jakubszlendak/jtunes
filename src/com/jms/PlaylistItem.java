@@ -1,4 +1,7 @@
 package com.jms;
+
+import javax.swing.*;
+
 /**
  * Created by jakub on 16.11.15.
  */
@@ -32,4 +35,9 @@ public class PlaylistItem {
     public int getYear() { return year; }
 
     public int getDuration() { return duration; }
+
+    public ImageIcon getAlbumArt() {
+//        return albumArt;
+        return null;
+    }
 }

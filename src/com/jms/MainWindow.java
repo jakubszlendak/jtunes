@@ -32,7 +32,10 @@ public class MainWindow extends JPanel
     // Playlist widget
     JList playList;
 
-    public MainWindow()
+    // Program logic controllers
+    Playlist playlist;
+
+    public MainWindow(Playlist playlist)
     {
         // Superclass constructor call
         super(new BorderLayout());
@@ -51,10 +54,13 @@ public class MainWindow extends JPanel
 
 
         playList = new JList();
-
+        playList.setCellRenderer(new PlaylistItemRenderer());
 
         mainPanel.add(playList, PLAYLIST_PANEL);
         mainPanel.add(editPanel, EDITOR_PANEL);
+
+        this.playlist = playlist;
+        playList.setModel(playlist);
 
     }
 
@@ -105,10 +111,10 @@ public class MainWindow extends JPanel
         });
     }
 
-    public static void makeGUI()
+    public static void makeGUI(Playlist playlist)
     {
         JFrame frame = new JFrame("jTunes");
-        JComponent contentPane = new MainWindow();
+        JComponent contentPane = new MainWindow(playlist);
         contentPane.setOpaque(true);
         frame.setContentPane(contentPane);
         frame.pack();
