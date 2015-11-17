@@ -12,6 +12,7 @@ public class PlaylistItem {
     private String genre;
     private int year;
     private int duration;
+    private String filename;
 
     public PlaylistItem(String title, String artist, String album, String genre, int year, int duration) {
         this.title = title;
@@ -39,5 +40,9 @@ public class PlaylistItem {
     public ImageIcon getAlbumArt() {
 //        return albumArt;
         return null;
+    }
+
+    public String getFilename() {
+        return filename;
     }
 }
