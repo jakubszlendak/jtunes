@@ -11,8 +11,6 @@ import java.awt.image.BufferedImage;
 public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<PlaylistItem> {
 
     private JLabel description;
-//    private JLabel album;
-//    private JLabel title;
     private JLabel genre;
     private JLabel albumArt;
     private JLabel trackLength;
@@ -21,13 +19,13 @@ public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<Pla
     private static final String DEFAULT_ALBUM_ART_PATH = "noalbum.jpg";
 
     public PlaylistItemRenderer() {
+
         setOpaque(true);
 
         // Load default album art if not already loaded
         if(noAlbumArtIcon == null)
             noAlbumArtIcon = new ImageIcon(getScaledImage(new ImageIcon(DEFAULT_ALBUM_ART_PATH).getImage(), 40, 40));
-//            noAlbumArtIcon = new ImageIcon(DEFAULT_ALBUM_ART_PATH);
-//
+
         // Create render elements with default values
         description = new JLabel("Track");
         trackLength = new JLabel("0:00");
@@ -54,7 +52,7 @@ public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<Pla
     @Override
     public Component getListCellRendererComponent(JList<? extends PlaylistItem> list, PlaylistItem value, int index, boolean isSelected, boolean cellHasFocus) {
         // Set values or leave defaults
-        String descriptionStr = new String("");
+        String descriptionStr = "";
         if(value.getArtist() != null)
             descriptionStr = value.getArtist();
         if(value.getAlbum() != null)

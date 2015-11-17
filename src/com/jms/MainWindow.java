@@ -1,8 +1,7 @@
 package com.jms;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by jakub on 15.11.15.
@@ -30,7 +29,7 @@ public class MainWindow extends JPanel
     JPanel playlistPanel;
 
     // Playlist widget
-    JList playList;
+    JList playlistDisplay;
 
     // Program logic controllers
     Playlist playlist;
@@ -53,14 +52,14 @@ public class MainWindow extends JPanel
         this.add(mainPanel, BorderLayout.CENTER);
 
 
-        playList = new JList();
-        playList.setCellRenderer(new PlaylistItemRenderer());
+        playlistDisplay = new JList();
+        playlistDisplay.setCellRenderer(new PlaylistItemRenderer());
 
-        mainPanel.add(playList, PLAYLIST_PANEL);
+        mainPanel.add(playlistDisplay, PLAYLIST_PANEL);
         mainPanel.add(editPanel, EDITOR_PANEL);
 
         this.playlist = playlist;
-        playList.setModel(playlist);
+        playlistDisplay.setModel(playlist);
 
     }
 
@@ -108,6 +107,18 @@ public class MainWindow extends JPanel
         {
             CardLayout cl = (CardLayout) mainPanel.getLayout();
             cl.show(mainPanel, EDITOR_PANEL);
+        });
+
+        loadButton.addActionListener(e ->
+        {
+            final JFileChooser fc = new JFileChooser();
+            fc.setFileFilter(new FileNameExtensionFilter("MP3 and WAVE files.", "mp3", "wav", "wave"));
+            int retval = fc.showOpenDialog(this);
+            if(retval == JFileChooser.APPROVE_OPTION)
+            {
+                playlist.addPlaylistItem(new PlaylistItem(fc.getSelectedFile()));
+            }
+
         });
     }
 

@@ -1,11 +1,14 @@
 package com.jms;
 
 import javax.swing.*;
+import java.io.File;
 
 /**
  * Created by jakub on 16.11.15.
  */
 public class PlaylistItem {
+    File file;
+
     private String title;
     private String artist;
     private String album;
@@ -14,6 +17,15 @@ public class PlaylistItem {
     private int duration;
     private String filename;
 
+    /**
+     * Test constructor. Used to create dummy PlaylistItems. Just fills paramteres "by hand"
+     * @param title
+     * @param artist
+     * @param album
+     * @param genre
+     * @param year
+     * @param duration
+     */
     public PlaylistItem(String title, String artist, String album, String genre, int year, int duration) {
         this.title = title;
         this.artist = artist;
@@ -23,7 +35,11 @@ public class PlaylistItem {
         this.duration = duration;
     }
 
-
+    public PlaylistItem(File file)
+    {
+        //TODO: Open file, extract metadata, fill properties
+        //TODO: Try to find album art
+    }
 
     public String getTitle() { return title; }
 
