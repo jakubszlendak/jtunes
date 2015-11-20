@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="jtunes:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/jtunes_jar</output-path>
+    <root id="archive" name="jtunes.jar">
+      <element id="module-output" name="jtunes" />
+    </root>
+  </artifact>
+</component>

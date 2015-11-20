@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$USER_HOME$/Desktop/JAVA/jtunes/src/jtunes.iml" filepath="$USER_HOME$/Desktop/JAVA/jtunes/src/jtunes.iml" />
       <module fileurl="file:///media/win/workspace/Java/player/player.iml" filepath="/media/win/workspace/Java/player/player.iml" />
     </modules>
   </component>
