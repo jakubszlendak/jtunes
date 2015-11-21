@@ -18,13 +18,16 @@ public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<Pla
     private static ImageIcon noAlbumArtIcon = null;
     private static final String DEFAULT_ALBUM_ART_PATH = "noalbum.jpg";
 
+    /**
+     * Default constructor. Creates layout and fills default values to labels.
+     */
     public PlaylistItemRenderer() {
 
         setOpaque(true);
 
         // Load default album art if not already loaded
         if(noAlbumArtIcon == null)
-            noAlbumArtIcon = new ImageIcon(getScaledImage(new ImageIcon(DEFAULT_ALBUM_ART_PATH).getImage(), 40, 40));
+            noAlbumArtIcon = new ImageIcon(getScaledImage(new ImageIcon(DEFAULT_ALBUM_ART_PATH).getImage(), 50, 50));
 
         // Create render elements with default values
         description = new JLabel("Track");

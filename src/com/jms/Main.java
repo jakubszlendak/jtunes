@@ -3,8 +3,6 @@ package com.jms;
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
-
         Playlist playlist = new Playlist();
         //TODO: test code
         playlist.addPlaylistItem(new PlaylistItem("Nothing else matters", "Metallica", "Black album", "Metal", 1000, 1000));

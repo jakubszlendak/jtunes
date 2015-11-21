@@ -1,5 +1,9 @@
 package com.jms;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 
@@ -23,6 +27,15 @@ public class MainWindow extends JPanel
     // Switch-to-edit button
     JButton editButton;
 
+    //Playlist toolbar
+    JToolBar playlistToolbar;
+    JButton itemUpButton;
+    JButton itemDownButton;
+    JButton removeItemButton;
+
+    // Track progress slider
+    JSlider progressSlider;
+
     // Panels
     JPanel mainPanel;
     JPanel editPanel;
@@ -40,6 +53,8 @@ public class MainWindow extends JPanel
         super(new BorderLayout());
         // Setup toolbar
         setupPlaybackButtons();
+        setupSlider();
+        setupPlaylistToolbar();
 
         // Setup main panel with card layout
         mainPanel = new JPanel(new CardLayout());
@@ -47,20 +62,75 @@ public class MainWindow extends JPanel
         editPanel = new JPanel();
         playlistPanel = new JPanel();
 
-//        this.setLayout(new BorderLayout());
-        this.add(playbackToolbar, BorderLayout.NORTH);
+
+        JPanel toolbarPanel = new JPanel(new BorderLayout());
+        toolbarPanel.add(playbackToolbar, BorderLayout.NORTH);
+        toolbarPanel.add(progressSlider, BorderLayout.SOUTH);
+
+
+        this.add(toolbarPanel, BorderLayout.NORTH);
         this.add(mainPanel, BorderLayout.CENTER);
 
 
         playlistDisplay = new JList();
         playlistDisplay.setCellRenderer(new PlaylistItemRenderer());
+        playlistPanel.add(playlistDisplay);
+        playlistPanel.add(playlistToolbar);
 
-        mainPanel.add(playlistDisplay, PLAYLIST_PANEL);
+        mainPanel.add(playlistPanel, PLAYLIST_PANEL);
         mainPanel.add(editPanel, EDITOR_PANEL);
 
         this.playlist = playlist;
+        playlist.addListDataListener(new ListDataListener() {
+            @Override
+            public void intervalAdded(ListDataEvent e) {
+                playlistDisplay.repaint();
+            }
+
+            @Override
+            public void intervalRemoved(ListDataEvent e) {
+                playlistDisplay.repaint();
+            }
+
+            @Override
+            public void contentsChanged(ListDataEvent e) {
+                playlistDisplay.repaint();
+            }
+        });
         playlistDisplay.setModel(playlist);
 
+    }
+
+    private void setupPlaylistToolbar() {
+        itemUpButton = new JButton("Up");
+        itemUpButton.setToolTipText("Move one position up");
+        itemDownButton = new JButton("Down");
+        itemDownButton.setToolTipText("Move one position down");
+        removeItemButton = new JButton("Del");
+        removeItemButton.setToolTipText("Delete item");
+
+        itemUpButton.addActionListener(e -> {
+            int index = playlistDisplay.getSelectedIndex();
+            if (index < 0) return;
+            // If selected index is first, do not replace
+            if (index != 0)
+                playlist.replaceItem(index, index-1);
+
+        });
+        itemDownButton.addActionListener(e -> {
+            int index = playlistDisplay.getSelectedIndex();
+            if(index < 0) return;
+            // If selected index is last, do not replace
+            if(index != playlist.getSize()-1)
+                playlist.replaceItem(index, index+1);
+
+        });
+
+        playlistToolbar = new JToolBar("Playlsit toolbar", JToolBar.VERTICAL);
+        playlistToolbar.add(itemUpButton);
+        playlistToolbar.add(itemDownButton);
+        playlistToolbar.add(removeItemButton);
+        playlistToolbar.setFloatable(false);
     }
 
     private void setupPlaybackButtons()
@@ -103,6 +173,8 @@ public class MainWindow extends JPanel
         playbackToolbar.addSeparator();
         playbackToolbar.add(editButton);
 
+        playbackToolbar.setFloatable(false);
+
         editButton.addActionListener(e ->
         {
             CardLayout cl = (CardLayout) mainPanel.getLayout();
@@ -120,6 +192,14 @@ public class MainWindow extends JPanel
             }
 
         });
+    }
+
+    private void setupSlider(){
+        progressSlider = new JSlider();
+        progressSlider.addChangeListener(e -> {
+            //TODO: Service slider clicking
+        });
+
     }
 
     public static void makeGUI(Playlist playlist)

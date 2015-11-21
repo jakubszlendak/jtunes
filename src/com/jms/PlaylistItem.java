@@ -16,15 +16,16 @@ public class PlaylistItem {
     private int year;
     private int duration;
     private String filename;
+    private ImageIcon albumArt;
 
     /**
      * Test constructor. Used to create dummy PlaylistItems. Just fills paramteres "by hand"
-     * @param title
-     * @param artist
-     * @param album
-     * @param genre
-     * @param year
-     * @param duration
+     * @param title title
+     * @param artist artist
+     * @param album album
+     * @param genre genre
+     * @param year year
+     * @param duration duration
      */
     public PlaylistItem(String title, String artist, String album, String genre, int year, int duration) {
         this.title = title;
@@ -35,6 +36,10 @@ public class PlaylistItem {
         this.duration = duration;
     }
 
+    /**
+     * Creates a playlist item from given file
+     * @param file music file
+     */
     public PlaylistItem(File file)
     {
         //TODO: Open file, extract metadata, fill properties
@@ -54,8 +59,7 @@ public class PlaylistItem {
     public int getDuration() { return duration; }
 
     public ImageIcon getAlbumArt() {
-//        return albumArt;
-        return null;
+        return albumArt;
     }
 
     public String getFilename() {

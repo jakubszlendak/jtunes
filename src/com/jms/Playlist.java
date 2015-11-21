@@ -2,6 +2,7 @@ package com.jms;
 import com.jms.PlaylistItem;
 
 import javax.swing.*;
+import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.LinkedList;
 
@@ -62,9 +63,10 @@ public class Playlist implements ListModel<PlaylistItem> {
      * @return false if one of indices is out of bounds
      */
     public boolean replaceItem(int itemIndex, int destination){
-        if(playlist.size()<itemIndex){
+        if(itemIndex < playlist.size()){
             PlaylistItem temp = playlist.remove(itemIndex);
             playlist.add(destination, temp);
+
             return true;
         }
         else return false;
