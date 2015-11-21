@@ -16,7 +16,7 @@ public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<Pla
     private JLabel trackLength;
 
     private static ImageIcon noAlbumArtIcon = null;
-    private static final String DEFAULT_ALBUM_ART_PATH = "noalbum.jpg";
+    private static final String DEFAULT_ALBUM_ART_PATH = "img/noalbum.jpg";
 
     /**
      * Default constructor. Creates layout and fills default values to labels.

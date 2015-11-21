@@ -5,7 +5,6 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 
-import javax.xml.soap.SOAPPart;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

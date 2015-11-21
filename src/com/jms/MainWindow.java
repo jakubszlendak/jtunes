@@ -12,6 +12,21 @@ import java.awt.*;
  */
 public class MainWindow extends JPanel
 {
+    private final static String ICON_PATH = "img/";
+    private final static String PLAY_ICON_PATH  = ICON_PATH +"play.jpg";
+    private final static String PAUSE_ICON_PATH = ICON_PATH +"pause.jpg";
+    private final static String STOP_ICON_PATH  = ICON_PATH +"stop.jpg";
+    private final static String NEXT_ICON_PATH  = ICON_PATH +"next.jpg";
+    private final static String PREV_ICON_PATH  = ICON_PATH +"prev.jpg";
+    private final static String LOAD_ICON_PATH  = ICON_PATH +"load.jpg";
+    private final static String SHUFFLE_ICON_PATH = ICON_PATH +"shuffle.jpg";
+
+    private final static String ITEM_UP_ICON_PATH = ICON_PATH +"up.png";
+    private final static String ITEM_DOWN_ICON_PATH = ICON_PATH +"down.png";
+    private final static String ITEM_DEL_ICON_PATH = ICON_PATH +"del.png";
+
+    private final static int BUTTON_ICON_SIZE = 30;
+
     private final static String PLAYLIST_PANEL = "Playlist";
     private final static String EDITOR_PANEL = "Editor";
 
@@ -102,11 +117,11 @@ public class MainWindow extends JPanel
     }
 
     private void setupPlaylistToolbar() {
-        itemUpButton = new JButton("Up");
+        itemUpButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(ITEM_UP_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         itemUpButton.setToolTipText("Move one position up");
-        itemDownButton = new JButton("Down");
+        itemDownButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(ITEM_DOWN_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         itemDownButton.setToolTipText("Move one position down");
-        removeItemButton = new JButton("Del");
+        removeItemButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(ITEM_DEL_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         removeItemButton.setToolTipText("Delete item");
 
         itemUpButton.addActionListener(e -> {
@@ -135,25 +150,26 @@ public class MainWindow extends JPanel
 
     private void setupPlaybackButtons()
     {
-        playButton = new JButton("Play");
+        playButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(PLAY_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         playButton.setToolTipText("Play");
+//        playButton.setIcon(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(PLAY_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
 
-        pauseButton = new JButton("Pause");
+        pauseButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(PAUSE_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         pauseButton.setToolTipText("Pause");
 
-        stopButton = new JButton("Stop");
+        stopButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(STOP_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         stopButton.setToolTipText("Stop");
 
-        nextButton = new JButton("Next");
+        nextButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(NEXT_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         nextButton.setToolTipText("Next track");;
 
-        prevButton = new JButton("Prev");
+        prevButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(PREV_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         prevButton.setToolTipText("Previous track");
 
-        randomButton = new JButton("Random");
+        randomButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(SHUFFLE_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         randomButton.setToolTipText("Play random track");
 
-        loadButton = new JButton("Load");
+        loadButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(LOAD_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         loadButton.setToolTipText("Load new track from filesystem");
 
         editButton = new JButton("Edit mode");
