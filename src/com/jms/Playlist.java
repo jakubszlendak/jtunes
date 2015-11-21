@@ -9,7 +9,7 @@ import java.util.LinkedList;
 /**
  * Created by jakub on 16.11.15.
  */
-public class Playlist implements ListModel<PlaylistItem> {
+public class Playlist extends AbstractListModel<PlaylistItem> {
 
     private LinkedList<PlaylistItem> playlist;
     private ListDataListener listener;
@@ -35,26 +35,36 @@ public class Playlist implements ListModel<PlaylistItem> {
     public boolean addPlaylistItem(PlaylistItem item, int index){
         if(index >= 0 && index < playlist.size()){
             playlist.add(index, item);
+            fireIntervalAdded(item, index, index);
             return true;
         } else {
             return false;
         }
     }
-
-    /**
-     * Finds given item and moves it to new position
-     * @param item Item to be replaced
-     * @param index Destination index
-     * @return false if playlist doesn't contain item or index is out of bounds
-     */
-    public boolean replaceItem(PlaylistItem item, int index){
-        if(playlist.contains(item)){
-            playlist.remove(item);
-            playlist.add(index, item);
-            return true;
+    public PlaylistItem removePlaylistItem(int index){
+        if(index >= 0 && index <playlist.size()){
+            PlaylistItem tmp = playlist.remove(index);
+            fireContentsChanged(tmp, index, index);
+            return tmp;
         }
-        else return false;
+        else return null;
     }
+
+//    /**
+//     * Finds given item and moves it to new position
+//     * @param item Item to be replaced
+//     * @param index Destination index
+//     * @return false if playlist doesn't contain item or index is out of bounds
+//     */
+//    public boolean replaceItem(PlaylistItem item, int index){
+//        if(playlist.contains(item)){
+//            playlist.remove(item);
+//            playlist.add(index, item);
+//            fireContentsChanged(item, index, index);
+//            return true;
+//        }
+//        else return false;
+//    }
 
     /**
      * Moves item from one index to another
@@ -66,7 +76,10 @@ public class Playlist implements ListModel<PlaylistItem> {
         if(itemIndex < playlist.size()){
             PlaylistItem temp = playlist.remove(itemIndex);
             playlist.add(destination, temp);
-
+            if (itemIndex>destination)
+                fireIntervalAdded(temp, destination, itemIndex);
+            else
+                fireIntervalAdded(temp,itemIndex, destination);
             return true;
         }
         else return false;
@@ -82,13 +95,14 @@ public class Playlist implements ListModel<PlaylistItem> {
         return playlist.get(index);
     }
 
-    @Override
-    public void addListDataListener(ListDataListener l) {
-        listener = l;
-    }
-
-    @Override
-    public void removeListDataListener(ListDataListener l) {
-        l = null;
-    }
+//    @Override
+//    public void addListDataListener(ListDataListener l) {
+//
+//        listener = l;
+//    }
+//
+//    @Override
+//    public void removeListDataListener(ListDataListener l) {
+//        l = null;
+//    }
 }

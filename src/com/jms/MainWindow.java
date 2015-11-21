@@ -96,22 +96,23 @@ public class MainWindow extends JPanel
         mainPanel.add(editPanel, EDITOR_PANEL);
 
         this.playlist = playlist;
+
         playlist.addListDataListener(new ListDataListener() {
-            @Override
-            public void intervalAdded(ListDataEvent e) {
-                playlistDisplay.repaint();
-            }
+             @Override
+             public void intervalAdded(ListDataEvent e) {
+                 playlistDisplay.repaint();
+             }
 
-            @Override
-            public void intervalRemoved(ListDataEvent e) {
-                playlistDisplay.repaint();
-            }
+             @Override
+             public void intervalRemoved(ListDataEvent e) {
+                 playlistDisplay.repaint();
+             }
 
-            @Override
-            public void contentsChanged(ListDataEvent e) {
-                playlistDisplay.repaint();
-            }
-        });
+             @Override
+             public void contentsChanged(ListDataEvent e) {
+                 playlistDisplay.repaint();
+             }
+         });
         playlistDisplay.setModel(playlist);
 
     }
@@ -139,6 +140,12 @@ public class MainWindow extends JPanel
             if(index != playlist.getSize()-1)
                 playlist.replaceItem(index, index+1);
 
+        });
+
+        removeItemButton.addActionListener(e -> {
+            int index = playlistDisplay.getSelectedIndex();
+            if(index<0) return;
+            playlist.removePlaylistItem(index);
         });
 
         playlistToolbar = new JToolBar("Playlsit toolbar", JToolBar.VERTICAL);
