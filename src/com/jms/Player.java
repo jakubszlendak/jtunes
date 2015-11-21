@@ -125,13 +125,14 @@ public class Player
     {
         /// Randomize the index of the next song, accordingly to the list's size and set that index as the current
         // element index
-        this.getPlaylist().setCurrentElementIndex((int)Math.random()%this.getPlaylist().getSize());
+        int random = (int)(Math.random()*Integer.MAX_VALUE)%this.getPlaylist().getSize();
+        this.getPlaylist().setCurrentElementIndex(random);
 
         /// Open the chosen fike
         this.openFile(this.getPlaylist().getElementAt(this.getPlaylist().getCurrentElementIndex()).getFile());
     }
 
-    public void continuousPlay()
+    public void continuousOrderlyPlay()
     {
         /// Set initially the index to the playlist end, because the getNextSong method will wrap it to the start
         this.getPlaylist().setCurrentElementIndex(this.getPlaylist().getSize()-1);
@@ -140,6 +141,17 @@ public class Player
         {
             /// Get the next song from the playlist
             this.getNextSong();
+            /// Play the song
+            this.play();
+        }while(true);
+    }
+
+    public void continuousRandomPlay()
+    {
+        do
+        {
+            /// Randomize the next song from the playlist
+            this.randomizeNextSong();
             /// Play the song
             this.play();
         }while(true);
