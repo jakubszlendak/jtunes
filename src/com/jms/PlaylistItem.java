@@ -44,6 +44,7 @@ public class PlaylistItem {
     {
         //TODO: Open file, extract metadata, fill properties
         //TODO: Try to find album art
+        this.file = file;
     }
 
     public String getTitle() { return title; }
@@ -62,7 +63,13 @@ public class PlaylistItem {
         return albumArt;
     }
 
+    public File getFile()
+    {
+        return file;
+    }
+
     public String getFilename() {
         return filename;
+
     }
 }

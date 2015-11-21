@@ -13,9 +13,10 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
 
     private LinkedList<PlaylistItem> playlist;
     private ListDataListener listener;
-
+    private int currentElementIndex;
     Playlist(){
         playlist = new LinkedList<>();
+        currentElementIndex = 0;
     }
 
     /**
@@ -66,6 +67,11 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
 //        else return false;
 //    }
 
+    public int getCurrentElementIndex()
+    {
+        return currentElementIndex;
+    }
+
     /**
      * Moves item from one index to another
      * @param itemIndex Source index
@@ -93,6 +99,23 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
     @Override
     public PlaylistItem getElementAt(int index) {
         return playlist.get(index);
+    }
+
+    public void incCurrentElementIndex()
+    {
+        if(currentElementIndex < this.getSize() - 1)
+            this.currentElementIndex++;
+    }
+
+    public void setCurrentElementIndex(int newIndex)
+    {
+        if(newIndex < this.getSize())
+            this.currentElementIndex = newIndex;
+    }
+
+    public String getElementPath(int elementIndex)
+    {
+        return this.getElementAt(elementIndex).getFile().getPath();
     }
 
 //    @Override
