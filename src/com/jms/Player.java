@@ -37,6 +37,10 @@ public class Player
         playlist = new Playlist();
     }
 
+    /**
+     * Sets the .mp3 file which is about to be played by the player and creates FileInputStream for it
+     * @param file - the file which is to be played
+     */
     public void openFile(File file)
     {
         try
@@ -68,17 +72,28 @@ public class Player
         }
     }
 
+    /**
+     * This function pauses the song playing and stores information on which frame pause happened. It will be used to
+     * start playing the song from the frame it was paused
+     */
     public void pause()
     {
         player.stop();
         state = State.STATE_PAUSED;
     }
 
+    /**
+     * This is the getter for player's playlist
+     * @return playlist
+     */
     public Playlist getPlaylist()
     {
         return playlist;
     }
 
+    /**
+     * This function does automatically play the song from the beginning or from the frame it was paused on.
+     */
     public void play()
     {
         if(state == State.STATE_PLAYING)
@@ -109,7 +124,10 @@ public class Player
         }
     }
 
-    public void getNextSong()
+    /**
+     * This function sets the currently_played_song to the next song on the playlist. It does playlist wrapping
+     */
+    private void getNextSong()
     {
         ///   If we are have not played recently the last song, then increment the current song index
         if(this.getPlaylist().getCurrentElementIndex() < this.getPlaylist().getSize() - 1)
@@ -121,7 +139,10 @@ public class Player
         this.openFile(this.getPlaylist().getElementAt(this.getPlaylist().getCurrentElementIndex()).getFile());
     }
 
-    public void randomizeNextSong()
+    /**
+     * This function randomizes the next song which is to be played
+     */
+    private void randomizeNextSong()
     {
         /// Randomize the index of the next song, accordingly to the list's size and set that index as the current
         // element index
@@ -132,6 +153,9 @@ public class Player
         this.openFile(this.getPlaylist().getElementAt(this.getPlaylist().getCurrentElementIndex()).getFile());
     }
 
+    /**
+     * This function continuously reads songs from the playlist orderly and plays it
+     */
     public void continuousOrderlyPlay()
     {
         /// Set initially the index to the playlist end, because the getNextSong method will wrap it to the start
@@ -146,6 +170,9 @@ public class Player
         }while(true);
     }
 
+    /**
+     * This function continuously randomizes songs from playlist and plays them
+     */
     public void continuousRandomPlay()
     {
         do
