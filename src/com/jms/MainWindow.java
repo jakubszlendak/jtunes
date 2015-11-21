@@ -1,11 +1,12 @@
 package com.jms;
+import org.farng.mp3.TagException;
+
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * Created by jakub on 15.11.15.
@@ -62,6 +63,9 @@ public class MainWindow extends JPanel
     // Program logic controllers
     Playlist playlist;
 
+
+    private boolean editModeEnabled = false;
+
     public MainWindow(Playlist playlist)
     {
         // Superclass constructor call
@@ -98,21 +102,28 @@ public class MainWindow extends JPanel
         this.playlist = playlist;
 
         playlist.addListDataListener(new ListDataListener() {
-             @Override
-             public void intervalAdded(ListDataEvent e) {
-                 playlistDisplay.repaint();
-             }
+            @Override
+            public void intervalAdded(ListDataEvent e) {
+                playlistDisplay.repaint();
+                playlistDisplay.setSelectedIndex(e.getIndex0());
+            }
 
-             @Override
-             public void intervalRemoved(ListDataEvent e) {
-                 playlistDisplay.repaint();
-             }
+            @Override
+            public void intervalRemoved(ListDataEvent e) {
+                playlistDisplay.repaint();
+                playlistDisplay.clearSelection();
 
-             @Override
-             public void contentsChanged(ListDataEvent e) {
-                 playlistDisplay.repaint();
-             }
-         });
+            }
+
+            @Override
+            public void contentsChanged(ListDataEvent e) {
+                playlistDisplay.repaint();
+//                if(e.getIndex0()>e.getIndex1())
+//                    playlistDisplay.setSelectedIndex(e.getIndex0());
+//                else
+                    playlistDisplay.setSelectedIndex(e.getIndex1());
+            }
+        });
         playlistDisplay.setModel(playlist);
 
     }
@@ -159,7 +170,6 @@ public class MainWindow extends JPanel
     {
         playButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(PLAY_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         playButton.setToolTipText("Play");
-//        playButton.setIcon(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(PLAY_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
 
         pauseButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(PAUSE_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         pauseButton.setToolTipText("Pause");
@@ -201,7 +211,16 @@ public class MainWindow extends JPanel
         editButton.addActionListener(e ->
         {
             CardLayout cl = (CardLayout) mainPanel.getLayout();
-            cl.show(mainPanel, EDITOR_PANEL);
+            if(editModeEnabled){
+                cl.show(mainPanel, PLAYLIST_PANEL);
+                editModeEnabled = false;
+                editButton.setText("Playlist");
+            } else {
+                cl.show(mainPanel, EDITOR_PANEL);
+                editModeEnabled = true;
+                editButton.setText("Editor");
+            }
+
         });
 
         loadButton.addActionListener(e ->
@@ -211,7 +230,13 @@ public class MainWindow extends JPanel
             int retval = fc.showOpenDialog(this);
             if(retval == JFileChooser.APPROVE_OPTION)
             {
-                playlist.addPlaylistItem(new PlaylistItem(fc.getSelectedFile()));
+                try {
+                    playlist.addPlaylistItem(new PlaylistItem(fc.getSelectedFile()));
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(this, "Error when opening file: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (TagException e1) {
+                    JOptionPane.showMessageDialog(this, "Error when reading tags: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
 
         });

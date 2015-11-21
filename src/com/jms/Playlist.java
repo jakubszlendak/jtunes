@@ -2,7 +2,6 @@ package com.jms;
 import com.jms.PlaylistItem;
 
 import javax.swing.*;
-import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.LinkedList;
 
@@ -24,6 +23,7 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
      */
     public void addPlaylistItem(PlaylistItem item){
         playlist.add(item);
+        fireIntervalAdded(item, playlist.size()-1, playlist.size()-1);
     }
 
     /**
@@ -41,10 +41,16 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
             return false;
         }
     }
+
+    /**
+     * Removes item from playlsit
+     * @param index index of item to be deleted
+     * @return deleted item.
+     */
     public PlaylistItem removePlaylistItem(int index){
         if(index >= 0 && index <playlist.size()){
             PlaylistItem tmp = playlist.remove(index);
-            fireContentsChanged(tmp, index, index);
+            fireIntervalRemoved(tmp, index, index);
             return tmp;
         }
         else return null;
@@ -76,10 +82,7 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
         if(itemIndex < playlist.size()){
             PlaylistItem temp = playlist.remove(itemIndex);
             playlist.add(destination, temp);
-            if (itemIndex>destination)
-                fireIntervalAdded(temp, destination, itemIndex);
-            else
-                fireIntervalAdded(temp,itemIndex, destination);
+            fireContentsChanged(temp, destination, -1);
             return true;
         }
         else return false;
