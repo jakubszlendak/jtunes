@@ -13,6 +13,7 @@ import java.io.IOException;
  */
 public class MainWindow extends JPanel
 {
+    // Icon paths
     private final static String ICON_PATH = "img/";
     private final static String PLAY_ICON_PATH  = ICON_PATH +"play.jpg";
     private final static String PAUSE_ICON_PATH = ICON_PATH +"pause.jpg";
@@ -21,49 +22,48 @@ public class MainWindow extends JPanel
     private final static String PREV_ICON_PATH  = ICON_PATH +"prev.jpg";
     private final static String LOAD_ICON_PATH  = ICON_PATH +"load.jpg";
     private final static String SHUFFLE_ICON_PATH = ICON_PATH +"shuffle.jpg";
-
     private final static String ITEM_UP_ICON_PATH = ICON_PATH +"up.png";
     private final static String ITEM_DOWN_ICON_PATH = ICON_PATH +"down.png";
     private final static String ITEM_DEL_ICON_PATH = ICON_PATH +"del.png";
-
+    // Icon size
     private final static int BUTTON_ICON_SIZE = 30;
 
+    // Card Layout card names
     private final static String PLAYLIST_PANEL = "Playlist";
     private final static String EDITOR_PANEL = "Editor";
 
     // Playback toolbar
-    JToolBar playbackToolbar;
-    JButton playButton;
-    JButton pauseButton;
-    JButton stopButton;
-    JButton nextButton;
-    JButton prevButton;
-    JButton randomButton;
-    JButton loadButton;
-    // Switch-to-edit button
-    JButton editButton;
+    private JToolBar playbackToolbar;
+    private JButton playButton;
+    private JButton pauseButton;
+    private JButton stopButton;
+    private JButton nextButton;
+    private JButton prevButton;
+    private JButton randomButton;
+    private JButton loadButton;
+    private JButton editButton;
 
     //Playlist toolbar
-    JToolBar playlistToolbar;
-    JButton itemUpButton;
-    JButton itemDownButton;
-    JButton removeItemButton;
+    private JToolBar playlistToolbar;
+    private JButton itemUpButton;
+    private JButton itemDownButton;
+    private JButton removeItemButton;
 
     // Track progress slider
-    JSlider progressSlider;
+    private JSlider progressSlider;
 
     // Panels
-    JPanel mainPanel;
-    JPanel editPanel;
-    JPanel playlistPanel;
+    private JPanel mainPanel;
+    private JPanel editPanel;
+    private JPanel playlistPanel;
 
     // Playlist widget
-    JList playlistDisplay;
+    private JList playlistDisplay;
 
     // Program logic controllers
-    Playlist playlist;
+    private Playlist playlist;
 
-
+    // Flags
     private boolean editModeEnabled = false;
 
     public MainWindow(Playlist playlist)
@@ -77,37 +77,44 @@ public class MainWindow extends JPanel
 
         // Setup main panel with card layout
         mainPanel = new JPanel(new CardLayout());
-
         editPanel = new JPanel();
         playlistPanel = new JPanel();
 
-
+        // Setup toolbar panel
         JPanel toolbarPanel = new JPanel(new BorderLayout());
         toolbarPanel.add(playbackToolbar, BorderLayout.NORTH);
         toolbarPanel.add(progressSlider, BorderLayout.SOUTH);
 
-
+        // Setup top level layout
         this.add(toolbarPanel, BorderLayout.NORTH);
         this.add(mainPanel, BorderLayout.CENTER);
 
-
+        // Setup playlist display list
         playlistDisplay = new JList();
         playlistDisplay.setCellRenderer(new PlaylistItemRenderer());
-        playlistPanel.add(playlistDisplay);
+        playlistPanel.add(new JScrollPane(playlistDisplay));
         playlistPanel.add(playlistToolbar);
 
         mainPanel.add(playlistPanel, PLAYLIST_PANEL);
         mainPanel.add(editPanel, EDITOR_PANEL);
 
+        // Setup playlist model
         this.playlist = playlist;
-
         playlist.addListDataListener(new ListDataListener() {
+            /**
+             * Serves playlist add event
+             * @param e event
+             */
             @Override
             public void intervalAdded(ListDataEvent e) {
                 playlistDisplay.repaint();
                 playlistDisplay.setSelectedIndex(e.getIndex0());
             }
 
+            /**
+             * Serves playlist remove
+             * @param e event
+             */
             @Override
             public void intervalRemoved(ListDataEvent e) {
                 playlistDisplay.repaint();
@@ -115,19 +122,23 @@ public class MainWindow extends JPanel
 
             }
 
+            /**
+             * Serves playlist change event
+             * @param e event
+             */
             @Override
             public void contentsChanged(ListDataEvent e) {
                 playlistDisplay.repaint();
-//                if(e.getIndex0()>e.getIndex1())
-//                    playlistDisplay.setSelectedIndex(e.getIndex0());
-//                else
-                    playlistDisplay.setSelectedIndex(e.getIndex1());
+                playlistDisplay.setSelectedIndex(e.getIndex1());
             }
         });
         playlistDisplay.setModel(playlist);
 
     }
 
+    /**
+     * Setups playlist toolbar
+     */
     private void setupPlaylistToolbar() {
         itemUpButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(ITEM_UP_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         itemUpButton.setToolTipText("Move one position up");
@@ -166,6 +177,9 @@ public class MainWindow extends JPanel
         playlistToolbar.setFloatable(false);
     }
 
+    /**
+     * Setups playback toolbar
+     */
     private void setupPlaybackButtons()
     {
         playButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(PLAY_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
@@ -242,6 +256,9 @@ public class MainWindow extends JPanel
         });
     }
 
+    /**
+     * Setup playback slider
+     */
     private void setupSlider(){
         progressSlider = new JSlider();
         progressSlider.addChangeListener(e -> {

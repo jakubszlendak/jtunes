@@ -1,7 +1,9 @@
 package com.jms;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 import org.farng.mp3.MP3File;
@@ -21,7 +23,6 @@ public class PlaylistItem {
     private String genre;
     private int year;
     private int duration;
-    private String filename;
     private ImageIcon albumArt;
 
     /**
@@ -49,7 +50,6 @@ public class PlaylistItem {
      */
     public PlaylistItem(File file) throws IOException, TagException
     {
-        filename = file.getName();
         this.file = file;
         mp3File = new MP3File(file);
         if(mp3File.hasID3v1Tag())
@@ -80,8 +80,7 @@ public class PlaylistItem {
         }
 
 
-        //TODO: Open file, extract metadata, fill properties
-        //TODO: Try to find album art
+        albumArt = loadAlbumArt();
     }
 
     public String getTitle() { return title; }
@@ -100,7 +99,25 @@ public class PlaylistItem {
         return albumArt;
     }
 
-    public String getFilename() {
-        return filename;
+    public String getFilename() { return file.getName(); }
+
+    /**
+     * Tries to load AlbumArt - seeks for image files and loads first one found
+     * @return First image found in folder.
+     */
+    private ImageIcon loadAlbumArt()
+    {
+        File dir = new File(file.getParent());
+        File files[] = dir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return  name.toLowerCase().endsWith("jpg") ||
+                        name.toLowerCase().endsWith("jpeg") ||
+                        name.toLowerCase().endsWith("png");
+            }
+        });
+        if(files.length != 0)
+            return new ImageIcon(files[0].getPath());
+        else return null;
     }
 }

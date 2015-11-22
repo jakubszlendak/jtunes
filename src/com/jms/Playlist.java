@@ -32,7 +32,8 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
      * @param index Destination
      * @return false if index negative or out of bounds, otherwise true.
      */
-    public boolean addPlaylistItem(PlaylistItem item, int index){
+    public boolean addPlaylistItem(PlaylistItem item, int index)
+    {
         if(index >= 0 && index < playlist.size()){
             playlist.add(index, item);
             fireIntervalAdded(item, index, index);
@@ -47,7 +48,8 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
      * @param index index of item to be deleted
      * @return deleted item.
      */
-    public PlaylistItem removePlaylistItem(int index){
+    public PlaylistItem removePlaylistItem(int index)
+    {
         if(index >= 0 && index <playlist.size()){
             PlaylistItem tmp = playlist.remove(index);
             fireIntervalRemoved(tmp, index, index);
@@ -78,7 +80,8 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
      * @param destination Destination index
      * @return false if one of indices is out of bounds
      */
-    public boolean replaceItem(int itemIndex, int destination){
+    public boolean replaceItem(int itemIndex, int destination)
+    {
         if(itemIndex < playlist.size()){
             PlaylistItem temp = playlist.remove(itemIndex);
             playlist.add(destination, temp);

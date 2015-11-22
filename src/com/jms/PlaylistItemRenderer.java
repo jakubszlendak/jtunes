@@ -62,10 +62,8 @@ public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<Pla
             descriptionStr += " - " + value.getAlbum();
         if(value.getTitle() != null)
             descriptionStr += " - " + value.getTitle();
+        else descriptionStr += value.getFilename();
 
-        // If no tags was given fill description with filename
-        if(descriptionStr.equals(""))
-            descriptionStr = value.getFilename();
 
         description.setText(descriptionStr);
 
@@ -74,7 +72,8 @@ public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<Pla
         if(value.getArtist() != null)
             trackLength.setText(String.format("%02d:%02d", value.getDuration() / 60, value.getDuration() % 60));
         if(value.getAlbumArt() != null)
-            albumArt.setIcon(value.getAlbumArt());
+            albumArt.setIcon(new ImageIcon(getScaledImage(value.getAlbumArt().getImage(), 50, 50)));
+        else albumArt.setIcon(noAlbumArtIcon);
 
         Color background;
         Color foreground;
