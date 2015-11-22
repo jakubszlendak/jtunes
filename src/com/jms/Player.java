@@ -72,6 +72,17 @@ public class Player
         }
     }
 
+    public void openPlaylistItem(int index)
+    {
+        try
+        {
+            openFile(playlist.getElementAt(index).getFile());
+        } catch (Exception e)
+        {
+            //pass
+        }
+    }
+
     /**
      * This function pauses the song playing and stores information on which frame pause happened. It will be used to
      * start playing the song from the frame it was paused
@@ -98,30 +109,27 @@ public class Player
     {
         if(state == State.STATE_PLAYING)
             return;
-
-        if(state == State.STATE_PAUSED)
+        Thread worker = new Thread(() ->
         {
             try
             {
-                player.play(paused_on_frame);
-                state = State.STATE_PLAYING;
-            } catch (JavaLayerException e)
-            {
-                System.out.println(e.getMessage());
-            }
-        }
-        else
-        {
-            try
-            {
-                player.play();
-                state = State.STATE_PLAYING;
-            } catch (JavaLayerException e)
-            {
-                System.out.print(e.getMessage());
-            }
+                if(state == State.STATE_PAUSED)
+                {
+                    state = State.STATE_PLAYING;
+                    player.play(paused_on_frame);
+                }
+                else
+                {
+                    state = State.STATE_PLAYING;
+                    player.play();
+                }
 
-        }
+            } catch (JavaLayerException e)
+            {
+                e.printStackTrace();
+            }
+        });
+        worker.start();
     }
 
     /**
@@ -146,7 +154,14 @@ public class Player
     {
         /// Randomize the index of the next song, accordingly to the list's size and set that index as the current
         // element index
-        int random = (int)(Math.random()*Integer.MAX_VALUE)%this.getPlaylist().getSize();
+        int random =0;
+        try
+        {
+            random = (int) (Math.random() * Integer.MAX_VALUE) % this.getPlaylist().getSize();
+        } catch (ArithmeticException e)
+        {
+
+        }
         this.getPlaylist().setCurrentElementIndex(random);
 
         /// Open the chosen fike

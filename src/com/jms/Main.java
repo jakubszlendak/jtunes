@@ -12,7 +12,7 @@ public class Main {
 
         Runnable task = () -> MainWindow.makeGUI(player);
         javax.swing.SwingUtilities.invokeLater(task);
-        player.continuousRandomPlay();
+//        player.continuousRandomPlay();
 
     }
 }
