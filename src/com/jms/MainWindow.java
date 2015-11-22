@@ -62,11 +62,12 @@ public class MainWindow extends JPanel
 
     // Program logic controllers
     private Playlist playlist;
+    private Player player;
 
     // Flags
     private boolean editModeEnabled = false;
 
-    public MainWindow(Playlist playlist)
+    public MainWindow(Player player)
     {
         // Superclass constructor call
         super(new BorderLayout());
@@ -98,8 +99,10 @@ public class MainWindow extends JPanel
         mainPanel.add(playlistPanel, PLAYLIST_PANEL);
         mainPanel.add(editPanel, EDITOR_PANEL);
 
+        // Setup player model
+        this.player = player;
         // Setup playlist model
-        this.playlist = playlist;
+        this.playlist = player.getPlaylist();
         playlist.addListDataListener(new ListDataListener() {
             /**
              * Serves playlist add event
@@ -267,10 +270,10 @@ public class MainWindow extends JPanel
 
     }
 
-    public static void makeGUI(Playlist playlist)
+    public static void makeGUI(Player player)
     {
         JFrame frame = new JFrame("jTunes");
-        JComponent contentPane = new MainWindow(playlist);
+        JComponent contentPane = new MainWindow(player);
         contentPane.setOpaque(true);
         frame.setContentPane(contentPane);
         frame.pack();

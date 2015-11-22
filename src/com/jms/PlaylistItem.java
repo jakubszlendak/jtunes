@@ -26,7 +26,7 @@ public class PlaylistItem {
     private ImageIcon albumArt;
 
     /**
-     * Test constructor. Used to create dummy PlaylistItems. Just fills paramteres "by hand"
+     * Test constructor. Used to create dummy PlaylistItems. Just fills parameters "by hand"
      * @param title title
      * @param artist artist
      * @param album album
@@ -68,7 +68,7 @@ public class PlaylistItem {
             artist =tag.getLeadArtist();
             album = tag.getAlbumTitle();
             genre = tag.getSongGenre();
-            year = Integer.parseInt(tag.getYearReleased());
+//            year = Integer.parseInt(tag.getYearReleased());
         }
         else
         {
@@ -78,8 +78,6 @@ public class PlaylistItem {
             genre = null;
             year = 0;
         }
-
-
         albumArt = loadAlbumArt();
     }
 
@@ -95,9 +93,9 @@ public class PlaylistItem {
 
     public int getDuration() { return duration; }
 
-    public ImageIcon getAlbumArt() {
-        return albumArt;
-    }
+    public ImageIcon getAlbumArt() { return albumArt;  }
+
+    public File getFile() { return file; }
 
     public String getFilename() { return file.getName(); }
 
@@ -107,17 +105,25 @@ public class PlaylistItem {
      */
     private ImageIcon loadAlbumArt()
     {
-        File dir = new File(file.getParent());
+        File dir = null;
+        try {
+            dir = new File(file.getParent());
+        } catch (NullPointerException e) {
+            return null;
+        }
         File files[] = dir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return  name.toLowerCase().endsWith("jpg") ||
+                return name.toLowerCase().endsWith("jpg") ||
                         name.toLowerCase().endsWith("jpeg") ||
                         name.toLowerCase().endsWith("png");
             }
         });
-        if(files.length != 0)
+        if (files.length != 0)
             return new ImageIcon(files[0].getPath());
         else return null;
     }
+
+
+
 }

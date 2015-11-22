@@ -12,9 +12,12 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
 
     private LinkedList<PlaylistItem> playlist;
     private ListDataListener listener;
+    private int currentElementIndex;
+
 
     Playlist(){
         playlist = new LinkedList<>();
+        currentElementIndex = 0;
     }
 
     /**
@@ -58,21 +61,10 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
         else return null;
     }
 
-//    /**
-//     * Finds given item and moves it to new position
-//     * @param item Item to be replaced
-//     * @param index Destination index
-//     * @return false if playlist doesn't contain item or index is out of bounds
-//     */
-//    public boolean replaceItem(PlaylistItem item, int index){
-//        if(playlist.contains(item)){
-//            playlist.remove(item);
-//            playlist.add(index, item);
-//            fireContentsChanged(item, index, index);
-//            return true;
-//        }
-//        else return false;
-//    }
+    public int getCurrentElementIndex()
+    {
+        return currentElementIndex;
+    }
 
     /**
      * Moves item from one index to another
@@ -101,14 +93,21 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
         return playlist.get(index);
     }
 
-//    @Override
-//    public void addListDataListener(ListDataListener l) {
-//
-//        listener = l;
-//    }
-//
-//    @Override
-//    public void removeListDataListener(ListDataListener l) {
-//        l = null;
-//    }
+    public void incCurrentElementIndex()
+    {
+        if(currentElementIndex < this.getSize() - 1)
+            this.currentElementIndex++;
+    }
+
+    public void setCurrentElementIndex(int newIndex)
+    {
+        if(newIndex < this.getSize())
+            this.currentElementIndex = newIndex;
+    }
+
+    public String getElementPath(int elementIndex)
+    {
+        return this.getElementAt(elementIndex).getFile().getPath();
+    }
+
 }

@@ -1,15 +1,18 @@
 package com.jms;
 
+import org.farng.mp3.TagException;
+
+import java.io.File;
+import java.io.IOException;
+
 public class Main {
 
     public static void main(String[] args) {
-        Playlist playlist = new Playlist();
-        //TODO: test code
-        playlist.addPlaylistItem(new PlaylistItem("Nothing else matters", "Metallica", "Black album", "Metal", 1000, 1000));
-        playlist.addPlaylistItem(new PlaylistItem("aaaa", "bdagds", "ccvx", "d", 1000, 1000));
-        playlist.addPlaylistItem(new PlaylistItem("abbbb", "bsad", "cxcvxv", "d", 1000, 1000));
+        Player player = new Player();
 
-        Runnable task = () -> MainWindow.makeGUI(playlist);
+        Runnable task = () -> MainWindow.makeGUI(player);
         javax.swing.SwingUtilities.invokeLater(task);
+        player.continuousRandomPlay();
+
     }
 }
