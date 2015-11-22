@@ -228,11 +228,13 @@ public class MainWindow extends JPanel
         editButton.addActionListener(e ->
         {
             CardLayout cl = (CardLayout) mainPanel.getLayout();
-            if(editModeEnabled){
+            if (editModeEnabled)
+            {
                 cl.show(mainPanel, PLAYLIST_PANEL);
                 editModeEnabled = false;
                 editButton.setText("Playlist");
-            } else {
+            } else
+            {
                 cl.show(mainPanel, EDITOR_PANEL);
                 editModeEnabled = true;
                 editButton.setText("Editor");
@@ -282,6 +284,7 @@ public class MainWindow extends JPanel
         contentPane.setOpaque(true);
         frame.setContentPane(contentPane);
         frame.pack();
+        frame.setMinimumSize(new Dimension(frame.getWidth(), frame.getHeight()));
         frame.setVisible(true);
     }
 

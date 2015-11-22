@@ -145,7 +145,7 @@ public class Player
                 if(state == PlayerState.STATE_PAUSED)
                 {
                     state = PlayerState.STATE_PLAYING;
-                    player.play(paused_on_frame);
+                    player.play(paused_on_frame, Integer.MAX_VALUE);
                 }
                 else
                 {
