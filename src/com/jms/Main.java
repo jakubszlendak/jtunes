@@ -12,7 +12,28 @@ public class Main {
 
         Runnable task = () -> MainWindow.makeGUI(player);
         javax.swing.SwingUtilities.invokeLater(task);
-//        player.continuousRandomPlay();
+
+        try
+        {
+            player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("01_The_Trail.mp3")));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        } catch (TagException e)
+        {
+            e.printStackTrace();
+        }
+        try
+        {
+            player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("35 Hunt Or Be Hunted.mp3")));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        } catch (TagException e)
+        {
+            e.printStackTrace();
+        }
+        player.continuousRandomPlay();
 
     }
 }

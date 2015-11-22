@@ -282,6 +282,8 @@ public class MainWindow extends JPanel
         JFrame frame = new JFrame("jTunes");
         JComponent contentPane = new MainWindow(player);
         contentPane.setOpaque(true);
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(contentPane);
         frame.pack();
         frame.setMinimumSize(new Dimension(frame.getWidth(), frame.getHeight()));
