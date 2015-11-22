@@ -34,7 +34,7 @@ public class MP3Player extends AdvancedPlayer
 
     public MP3Player(File file) throws JavaLayerException
     {
-        super(null, null);
+        //super(null, null);
         this.currentlyOpenedFile = file;
         try
         {
@@ -93,49 +93,54 @@ public class MP3Player extends AdvancedPlayer
         if(state == PlayerState.STATE_PLAYING)
             return true;
 
-        boolean frameNotAchieved = true;
-        boolean songPlayed = true;
+
         currentFrameNumber = 0;
 
         openFile(songToPlay);
 
         state = PlayerState.STATE_PLAYING;
-        /// Rewind to the start frame
-        while ((currentFrameNumber < startFrameNumber) && frameNotAchieved)
+        Thread t = new Thread( ()->
         {
-            try
+            boolean frameNotAchieved = true;
+            boolean songPlayed = true;
+            /// Rewind to the start frame
+            while ((currentFrameNumber < startFrameNumber) && frameNotAchieved)
             {
-                frameNotAchieved = skipFrame();
-            } catch (JavaLayerException e)
-            {
-                e.printStackTrace();
-            }
-            currentFrameNumber++;
-        }
-
-        while((currentFrameNumber < endFrameNumber) && songPlayed && state != PlayerState.STATE_PAUSED && state !=
-                PlayerState.STATE_STOPPED)
-        {
-            try
-            {
-                songPlayed = decodeFrame();
+                try
+                {
+                    frameNotAchieved = skipFrame();
+                } catch (JavaLayerException e)
+                {
+                    e.printStackTrace();
+                }
                 currentFrameNumber++;
-            } catch (JavaLayerException e)
+            }
+
+            while ((currentFrameNumber < endFrameNumber) && songPlayed && state != PlayerState.STATE_PAUSED && state !=
+                    PlayerState.STATE_STOPPED)
             {
-                System.out.println("Blad dekodowania ramki nr: " + currentFrameNumber);
+                try
+                {
+                    songPlayed = decodeFrame();
+                    currentFrameNumber++;
+                } catch (JavaLayerException e)
+                {
+                    System.out.println("Blad dekodowania ramki nr: " + currentFrameNumber);
+                }
+            }
+
+            AudioDevice out = audio;
+            if (out != null)
+            {
+                out.flush();
+                synchronized (this)
+                {
+                    close();
+                }
             }
         }
-
-        AudioDevice out = audio;
-        if (out != null)
-        {
-            out.flush();
-            synchronized (this)
-            {
-                close();
-            }
-        }
-
+        );
+        t.start();
         return false;
     }
 

@@ -51,10 +51,10 @@ public class AdvancedPlayer
 	protected PlaybackListener listener;
 
 
-	/*public AdvancedPlayer()
+	public AdvancedPlayer()
 	{
 
-	}*/
+	}
 	/**
 	 * Creates a new <code>Player</code> instance.
 	 */
