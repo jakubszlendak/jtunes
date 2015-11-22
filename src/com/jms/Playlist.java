@@ -3,6 +3,7 @@ import com.jms.PlaylistItem;
 
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
+import java.io.File;
 import java.util.LinkedList;
 
 /**
@@ -110,4 +111,7 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
         return this.getElementAt(elementIndex).getFile().getPath();
     }
 
+    public PlaylistItem getCurrentElement() {
+        return playlist.get(currentElementIndex);
+    }
 }

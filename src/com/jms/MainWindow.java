@@ -240,11 +240,10 @@ public class MainWindow extends JPanel
 
         });
 
-        playButton.addActionListener(e2 -> {
-            player.openPlaylistItem(playlistDisplay.getSelectedIndex());
-            player.play();
-        });
+        // Play button action
+        playButton.addActionListener(e2 -> player.continuousOrderPlay());
         pauseButton.addActionListener(e2 -> player.pause());
+        stopButton.addActionListener(e2 -> player.stop());
 
         loadButton.addActionListener(e ->
         {

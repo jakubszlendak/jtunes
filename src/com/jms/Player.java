@@ -22,18 +22,18 @@ public class Player
 
     private int paused_on_frame = 0;
 
-    private enum State
+    public enum PlayerState
     {
         STATE_STOPPED,
         STATE_PAUSED,
         STATE_PLAYING,
         STATE_NO_FILE
     }
-    State state;
+    PlayerState state;
 
     public Player()
     {
-        state = State.STATE_NO_FILE;
+        state = PlayerState.STATE_NO_FILE;
         playlist = new Playlist();
     }
 
@@ -65,7 +65,7 @@ public class Player
                     paused_on_frame = evt.getFrame();
                 }
             });
-            state = State.STATE_STOPPED;
+            state = PlayerState.STATE_STOPPED;
         }catch(JavaLayerException e)
         {
             System.out.println(e.getMessage());
@@ -90,7 +90,16 @@ public class Player
     public void pause()
     {
         player.stop();
-        state = State.STATE_PAUSED;
+        state = PlayerState.STATE_PAUSED;
+    }
+
+    /**
+     * Stops playback.
+     */
+    public void stop()
+    {
+        player.stop();
+        state = PlayerState.STATE_STOPPED;
     }
 
     /**
@@ -105,52 +114,73 @@ public class Player
     /**
      * This function does automatically play the song from the beginning or from the frame it was paused on.
      */
-    public void play()
+    public void play(File file)
     {
-        if(state == State.STATE_PLAYING)
+        if(state == PlayerState.STATE_PLAYING)
             return;
-        Thread worker = new Thread(() ->
-        {
+//        Thread worker = new Thread(() ->
+//        {
+            // Load file
             try
             {
-                if(state == State.STATE_PAUSED)
+                // Close if any file opened
+                if(currently_played_file != null)
+                    currently_played_file.close();
+
+                currently_played_file = new FileInputStream(file);
+            } catch (IOException e)
+            {
+                System.out.println(e.getMessage());
+            }
+
+            // Prepare player
+            try
+            {
+                // Create player instance
+                player = new AdvancedPlayer(currently_played_file);
+                // Assign playback listener
+                player.setPlayBackListener(getPlaybackListener());
+
+                // Start playing depending on state
+                if(state == PlayerState.STATE_PAUSED)
                 {
-                    state = State.STATE_PLAYING;
+                    state = PlayerState.STATE_PLAYING;
                     player.play(paused_on_frame);
                 }
                 else
                 {
-                    state = State.STATE_PLAYING;
+                    state = PlayerState.STATE_PLAYING;
                     player.play();
                 }
-
-            } catch (JavaLayerException e)
+            }catch(JavaLayerException e)
             {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
-        });
-        worker.start();
+//        });
+//        worker.start();
     }
+
+    public PlayerState getState() { return state; }
 
     /**
      * This function sets the currently_played_song to the next song on the playlist. It does playlist wrapping
      */
-    private void getNextSong()
+    private File getNextSong()
     {
         ///   If we are have not played recently the last song, then increment the current song index
         if(this.getPlaylist().getCurrentElementIndex() < this.getPlaylist().getSize() - 1)
             this.getPlaylist().incCurrentElementIndex();
-        else    /**< Else, wrap the index and set it to the playlist start**/
+        else    /**< Else, wrap the index and set it to the playlist start */
             this.getPlaylist().setCurrentElementIndex(0);
 
         /// Open the next file
-        this.openFile(this.getPlaylist().getElementAt(this.getPlaylist().getCurrentElementIndex()).getFile());
+        return playlist.getCurrentElement().getFile();
     }
 
     /**
      * This function randomizes the next song which is to be played
      */
-    private void randomizeNextSong()
+    private File randomizeNextSong()
     {
         /// Randomize the index of the next song, accordingly to the list's size and set that index as the current
         // element index
@@ -164,25 +194,27 @@ public class Player
         }
         this.getPlaylist().setCurrentElementIndex(random);
 
-        /// Open the chosen fike
-        this.openFile(this.getPlaylist().getElementAt(this.getPlaylist().getCurrentElementIndex()).getFile());
+        /// Return chosen file
+        return playlist.getCurrentElement().getFile();
     }
 
     /**
      * This function continuously reads songs from the playlist orderly and plays it
      */
-    public void continuousOrderlyPlay()
+    public void continuousOrderPlay()
     {
         /// Set initially the index to the playlist end, because the getNextSong method will wrap it to the start
-        this.getPlaylist().setCurrentElementIndex(this.getPlaylist().getSize()-1);
+        playlist.setCurrentElementIndex(this.getPlaylist().getSize() - 1);
 
-        do
+        Thread t = new Thread( () ->
         {
-            /// Get the next song from the playlist
-            this.getNextSong();
-            /// Play the song
-            this.play();
-        }while(true);
+            do
+            {
+                play(getNextSong());
+            }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED);
+        });
+        t.start();
+
     }
 
     /**
@@ -190,13 +222,34 @@ public class Player
      */
     public void continuousRandomPlay()
     {
-        do
+        Thread t = new Thread( () ->
         {
-            /// Randomize the next song from the playlist
-            this.randomizeNextSong();
-            /// Play the song
-            this.play();
-        }while(true);
+            do
+            {
+                play(randomizeNextSong());
+            }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED);
+        });
+        t.start();
+    }
+
+    private PlaybackListener getPlaybackListener(){
+        return new PlaybackListener() {
+            @Override
+            public void playbackStarted(PlaybackEvent evt) {
+
+            }
+
+            @Override
+            public void playbackFinished(PlaybackEvent evt) {
+                paused_on_frame = evt.getFrame();
+                /// Close file
+                try {
+                    currently_played_file.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
     }
 
 }
