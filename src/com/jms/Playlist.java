@@ -18,7 +18,7 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
 
     Playlist(){
         playlist = new LinkedList<>();
-        currentElementIndex = 0;
+        currentElementIndex = -1;
     }
 
     /**

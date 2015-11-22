@@ -1,5 +1,6 @@
 package com.jms;
 
+import javazoom.jl.decoder.JavaLayerException;
 import org.farng.mp3.TagException;
 
 import java.io.File;
@@ -33,7 +34,18 @@ public class Main {
         {
             e.printStackTrace();
         }
-        player.continuousRandomPlay();
+       // player.continuousOrderPlay();
+
+        player.openFile(new File("01_The_Trail.mp3"));
+        try
+        {
+            player.getPlayer().play(0, Integer.MAX_VALUE);
+        } catch (JavaLayerException e)
+        {
+            e.printStackTrace();
+        }
+        //  player.play(new File("01_The_Trail.mp3"));
+
 
     }
 }

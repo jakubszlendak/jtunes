@@ -111,6 +111,11 @@ public class Player
         return playlist;
     }
 
+    public AdvancedPlayer getPlayer()
+    {
+        return player;
+    }
+
     /**
      * This function does automatically play the song from the beginning or from the frame it was paused on.
      */
@@ -203,18 +208,17 @@ public class Player
      */
     public void continuousOrderPlay()
     {
-        /// Set initially the index to the playlist end, because the getNextSong method will wrap it to the start
-        playlist.setCurrentElementIndex(this.getPlaylist().getSize() - 1);
-
         Thread t = new Thread( () ->
         {
             do
             {
-                play(getNextSong());
+                if(state != PlayerState.STATE_PAUSED && state != PlayerState.STATE_STOPPED)
+                    play(getNextSong());
+                else
+                    play(this.playlist.getElementAt(playlist.getCurrentElementIndex()).getFile());
             }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED);
         });
         t.start();
-
     }
 
     /**
@@ -236,7 +240,6 @@ public class Player
         return new PlaybackListener() {
             @Override
             public void playbackStarted(PlaybackEvent evt) {
-
             }
 
             @Override
