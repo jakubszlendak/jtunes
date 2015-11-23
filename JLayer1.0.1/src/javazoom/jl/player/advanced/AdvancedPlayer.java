@@ -241,7 +241,7 @@ public class AdvancedPlayer
 	 */
 	public void stop()
 	{
-		listener.playbackFinished(createEvent(PlaybackEvent.STOPPED));
+		//listener.playbackFinished(createEvent(PlaybackEvent.STOPPED));
 		close();
 	}
 }

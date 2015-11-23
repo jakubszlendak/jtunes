@@ -29,6 +29,7 @@ public class MP3Player extends AdvancedPlayer
     private int             currentFrameNumber;     /**< Number of the currently decoded frame **/
     private int             pausedOnFrame;          /**< Number of the frame which was decoded last when pause event
  came**/
+    private Thread          t;
 
     private PlayerState     state;
 
@@ -80,7 +81,8 @@ public class MP3Player extends AdvancedPlayer
         }
         try
         {
-            audio.open(decoder);
+            audio.open(decoder = new Decoder());
+
         } catch (JavaLayerException e)
         {
             e.printStackTrace();
@@ -99,7 +101,7 @@ public class MP3Player extends AdvancedPlayer
         openFile(songToPlay);
 
         state = PlayerState.STATE_PLAYING;
-        Thread t = new Thread( ()->
+        t = new Thread( ()->
         {
             boolean frameNotAchieved = true;
             boolean songPlayed = true;
@@ -126,6 +128,7 @@ public class MP3Player extends AdvancedPlayer
                 } catch (JavaLayerException e)
                 {
                     System.out.println("Blad dekodowania ramki nr: " + currentFrameNumber);
+
                 }
             }
 
@@ -146,15 +149,17 @@ public class MP3Player extends AdvancedPlayer
 
     public void pauseSong()
     {
-        pausedOnFrame = currentFrameNumber;
+        pausedOnFrame = currentFrameNumber-1;
+        state = PlayerState.STATE_PAUSED;
+
         this.stop();
 
-        state = PlayerState.STATE_PAUSED;
+
     }
 
     public void resumeSong()
     {
-        this.playSong(pausedOnFrame, Integer.MAX_VALUE, currentlyOpenedFile);
+        playSong(pausedOnFrame, Integer.MAX_VALUE, currentlyOpenedFile);
     }
 
     public void stopSong()
