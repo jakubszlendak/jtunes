@@ -13,33 +13,23 @@ public class Main {
         try
         {
             MP3Player mp3Player = new MP3Player(new File("01_The_Trail.mp3"));
+            mp3Player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("01_The_Trail.mp3")));
+            mp3Player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("35 Hunt Or Be Hunted.mp3")));
+            //mp3Player.continuousOrderPlay();
             Runnable task = () -> MainWindow.makeGUI(mp3Player);
             javax.swing.SwingUtilities.invokeLater(task);
-            mp3Player.playSong(0, Integer.MAX_VALUE, new File("01_The_Trail.mp3"));
-            try
-            {
-                mp3Player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("01_The_Trail.mp3")));
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            } catch (TagException e)
-            {
-                e.printStackTrace();
-            }
-            try
-            {
-                mp3Player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("35 Hunt Or Be Hunted.mp3")));
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            } catch (TagException e)
-            {
-                e.printStackTrace();
-            }
+
         } catch (JavaLayerException e)
         {
             e.printStackTrace();
+        } catch (TagException e)
+        {
+            e.printStackTrace();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
         }
+
 
         /*player.openFile(new File("01_The_Trail.mp3"));
         try

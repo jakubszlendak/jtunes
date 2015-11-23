@@ -18,20 +18,26 @@ public class MP3Player extends AdvancedPlayer
         STATE_STOPPED,
         STATE_PAUSED,
         STATE_PLAYING,
-        STATE_NO_FILE
+        STATE_NO_FILE,
+        STATE_NEXT_SONG_REQUESTED,
+        STATE_PREV_SONG_REQUESTED
     }
+    private enum RandomOrContinuous
+    {
+        PLAY_IN_ORDER,
+        PLAY_RANDOM
+    }
+    private Playlist                playlist;               /**< Playlist from which songs are played **/
 
-    private Playlist        playlist;               /**< Playlist from which songs are played **/
-
-    private Equalizer       equalizer;              /**< Equalizer which is used to modify audio settings **/
-    private File            currentlyOpenedFile;    /**< Currently processed file **/
-    private FileInputStream stream;                 /**< Buffer from which audio frames are taken **/
-    private int             currentFrameNumber;     /**< Number of the currently decoded frame **/
-    private int             pausedOnFrame;          /**< Number of the frame which was decoded last when pause event
+    private Equalizer               equalizer;              /**< Equalizer which is used to modify audio settings **/
+    private File                    currentlyOpenedFile;    /**< Currently processed file **/
+    private FileInputStream         stream;                 /**< Buffer from which audio frames are taken **/
+    private int                     currentFrameNumber;     /**< Number of the currently decoded frame **/
+    private int                     pausedOnFrame;          /**< Number of the frame which was decoded last when pause event
  came**/
 
-    private PlayerState     state;
-
+    private PlayerState             state;
+    private RandomOrContinuous      randomOrInOrder = RandomOrContinuous.PLAY_IN_ORDER;
 
 
     public MP3Player(File file) throws JavaLayerException
@@ -105,8 +111,8 @@ public class MP3Player extends AdvancedPlayer
         openFile(songToPlay);
 
         state = PlayerState.STATE_PLAYING;
-        Thread t = new Thread( ()->
-        {
+       // Thread t = new Thread( ()->
+       // {
             boolean frameNotAchieved = true;
             boolean songPlayed = true;
             /// Rewind to the start frame
@@ -145,15 +151,20 @@ public class MP3Player extends AdvancedPlayer
                     close();
                 }
             }
-        }
-        );
-        t.start();
+
+        state = PlayerState.STATE_NEXT_SONG_REQUESTED;
+        //}
+      //  );
+       // t.start();
         return false;
     }
 
     public void pauseSong()
     {
-        pausedOnFrame = currentFrameNumber - 4;
+        pausedOnFrame = currentFrameNumber - 4; /// Minus 4 frames for better impression after resume - the sound is
+                                                /// more consistent
+        if(pausedOnFrame < 0)
+            pausedOnFrame = 0;
         state = PlayerState.STATE_PAUSED;
 
         this.stop();
@@ -210,34 +221,21 @@ public class MP3Player extends AdvancedPlayer
     /**
      * This function continuously reads songs from the playlist orderly and plays it
      */
-    public void continuousOrderPlay()
+    public void continuousPlay()
     {
         Thread t = new Thread( () ->
         {
             do
             {
                 if(state != PlayerState.STATE_PAUSED && state != PlayerState.STATE_STOPPED)
-                    playSong(0, Integer.MAX_VALUE, getNextSong());
+                {
+                    if(randomOrInOrder == RandomOrContinuous.PLAY_IN_ORDER)
+                        playSong(0, Integer.MAX_VALUE, getNextSong());
+                    else
+                        playSong(0, Integer.MAX_VALUE, randomizeNextSong());
+                }
                 else
                    resumeSong();
-            }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED);
-        });
-        t.start();
-    }
-
-    /**
-     * This function continuously randomizes songs from playlist and plays them
-     */
-    public void continuousRandomPlay()
-    {
-        Thread t = new Thread( () ->
-        {
-            do
-            {
-                if(state != PlayerState.STATE_PAUSED && state != PlayerState.STATE_STOPPED)
-                    playSong(0, Integer.MAX_VALUE, randomizeNextSong());
-                else
-                    resumeSong();
             }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED);
         });
         t.start();
@@ -268,5 +266,13 @@ public class MP3Player extends AdvancedPlayer
         return equalizer;
     }
 
+    public RandomOrContinuous getRandomOrInOrder()
+    {
+        return randomOrInOrder;
+    }
 
+    public void setRandomOrInOrder(RandomOrContinuous randomOrInOrder)
+    {
+        this.randomOrInOrder = randomOrInOrder;
+    }
 }
