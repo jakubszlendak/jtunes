@@ -62,12 +62,12 @@ public class MainWindow extends JPanel
 
     // Program logic controllers
     private Playlist playlist;
-    private Player player;
+    private MP3Player player;
 
     // Flags
     private boolean editModeEnabled = false;
 
-    public MainWindow(Player player)
+    public MainWindow(MP3Player player)
     {
         // Superclass constructor call
         super(new BorderLayout());
@@ -244,8 +244,8 @@ public class MainWindow extends JPanel
 
         // Play button action
         playButton.addActionListener(e2 -> player.continuousOrderPlay());
-        pauseButton.addActionListener(e2 -> player.pause());
-        stopButton.addActionListener(e2 -> player.stop());
+        pauseButton.addActionListener(e2 -> player.pauseSong());
+        stopButton.addActionListener(e2 -> player.stopSong());
 
         loadButton.addActionListener(e ->
         {
@@ -277,7 +277,7 @@ public class MainWindow extends JPanel
 
     }
 
-    public static void makeGUI(Player player)
+    public static void makeGUI(MP3Player player)
     {
         JFrame frame = new JFrame("jTunes");
         JComponent contentPane = new MainWindow(player);

@@ -29,13 +29,13 @@ public class MP3Player extends AdvancedPlayer
     private int             currentFrameNumber;     /**< Number of the currently decoded frame **/
     private int             pausedOnFrame;          /**< Number of the frame which was decoded last when pause event
  came**/
-    private Thread          t;
 
     private PlayerState     state;
 
+
+
     public MP3Player(File file) throws JavaLayerException
     {
-        //super(null, null);
         this.currentlyOpenedFile = file;
         try
         {
@@ -59,6 +59,8 @@ public class MP3Player extends AdvancedPlayer
         {
             e.printStackTrace();
         }
+
+        this.playlist = new Playlist();
     }
 
     public void openFile(File file)
@@ -90,6 +92,8 @@ public class MP3Player extends AdvancedPlayer
 
     }
 
+
+
     public boolean playSong(int startFrameNumber, int endFrameNumber, File songToPlay)
     {
         if(state == PlayerState.STATE_PLAYING)
@@ -101,7 +105,7 @@ public class MP3Player extends AdvancedPlayer
         openFile(songToPlay);
 
         state = PlayerState.STATE_PLAYING;
-        t = new Thread( ()->
+        Thread t = new Thread( ()->
         {
             boolean frameNotAchieved = true;
             boolean songPlayed = true;
@@ -149,12 +153,10 @@ public class MP3Player extends AdvancedPlayer
 
     public void pauseSong()
     {
-        pausedOnFrame = currentFrameNumber-1;
+        pausedOnFrame = currentFrameNumber - 4;
         state = PlayerState.STATE_PAUSED;
 
         this.stop();
-
-
     }
 
     public void resumeSong()
@@ -168,6 +170,102 @@ public class MP3Player extends AdvancedPlayer
         currentFrameNumber = 0;
         pausedOnFrame = 0;
         state = PlayerState.STATE_STOPPED;
+    }
+
+    /**
+     * This function sets the currently_played_song to the next song on the playlist. It does playlist wrapping
+     */
+    private File getNextSong()
+    {
+        ///   If we are have not played recently the last song, then increment the current song index
+        if(this.getPlaylist().getCurrentElementIndex() < this.getPlaylist().getSize() - 1)
+            this.getPlaylist().incCurrentElementIndex();
+        else    /**< Else, wrap the index and set it to the playlist start */
+            this.getPlaylist().setCurrentElementIndex(0);
+
+        /// Open the next file
+        return playlist.getCurrentElement().getFile();
+    }
+    /**
+     * This function randomizes the next song which is to be played
+     */
+    private File randomizeNextSong()
+    {
+        /// Randomize the index of the next song, accordingly to the list's size and set that index as the current
+        // element index
+        int random =0;
+        try
+        {
+            random = (int) (Math.random() * Integer.MAX_VALUE) % this.getPlaylist().getSize();
+        } catch (ArithmeticException e)
+        {
+
+        }
+        this.getPlaylist().setCurrentElementIndex(random);
+
+        /// Return chosen file
+        return playlist.getCurrentElement().getFile();
+    }
+
+    /**
+     * This function continuously reads songs from the playlist orderly and plays it
+     */
+    public void continuousOrderPlay()
+    {
+        Thread t = new Thread( () ->
+        {
+            do
+            {
+                if(state != PlayerState.STATE_PAUSED && state != PlayerState.STATE_STOPPED)
+                    playSong(0, Integer.MAX_VALUE, getNextSong());
+                else
+                   resumeSong();
+            }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED);
+        });
+        t.start();
+    }
+
+    /**
+     * This function continuously randomizes songs from playlist and plays them
+     */
+    public void continuousRandomPlay()
+    {
+        Thread t = new Thread( () ->
+        {
+            do
+            {
+                if(state != PlayerState.STATE_PAUSED && state != PlayerState.STATE_STOPPED)
+                    playSong(0, Integer.MAX_VALUE, randomizeNextSong());
+                else
+                    resumeSong();
+            }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED);
+        });
+        t.start();
+    }
+
+    public void setPlaylist(Playlist playlist)
+    {
+        this.playlist = playlist;
+    }
+
+    public void setEqualizer(Equalizer equalizer)
+    {
+        this.equalizer = equalizer;
+    }
+
+    public File getCurrentlyOpenedFile()
+    {
+        return currentlyOpenedFile;
+    }
+
+    public Playlist getPlaylist()
+    {
+        return playlist;
+    }
+
+    public Equalizer getEqualizer()
+    {
+        return equalizer;
     }
 
 
