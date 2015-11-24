@@ -110,7 +110,7 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
      */
     public void decCurrentElementIndex()
     {
-        if(currentElementIndex < this.getSize() - 1)
+        if(currentElementIndex > 0)
             this.currentElementIndex--;
     }
 
