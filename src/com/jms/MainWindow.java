@@ -246,6 +246,8 @@ public class MainWindow extends JPanel
         playButton.addActionListener(e2 -> player.continuousPlay());
         pauseButton.addActionListener(e2 -> player.pauseSong());
         stopButton.addActionListener(e2 -> player.stopSong());
+        nextButton.addActionListener(e2 -> player.playNextSong());
+//        prevButton.addActionListener(e2 -> player.playPreviousSong());
 
         loadButton.addActionListener(e ->
         {

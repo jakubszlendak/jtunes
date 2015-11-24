@@ -22,11 +22,13 @@ public class MP3Player extends AdvancedPlayer
         STATE_NEXT_SONG_REQUESTED,
         STATE_PREV_SONG_REQUESTED
     }
+
     private enum PlaybackOrder
     {
         PLAY_IN_ORDER,
         PLAY_RANDOM
     }
+
     private Playlist                playlist;               /**< Playlist from which songs are played **/
 
     private Equalizer               equalizer;              /**< Equalizer which is used to modify audio settings **/
@@ -36,7 +38,7 @@ public class MP3Player extends AdvancedPlayer
     private int                     pausedOnFrame;          /**< Number of the frame which was decoded last when pause event came**/
 
     private PlayerState             state;
-    private PlaybackOrder      randomOrInOrder = PlaybackOrder.PLAY_IN_ORDER;
+    private PlaybackOrder           randomOrInOrder = PlaybackOrder.PLAY_IN_ORDER;
 
 
     public MP3Player(File file) throws JavaLayerException
@@ -99,7 +101,7 @@ public class MP3Player extends AdvancedPlayer
 
 
 
-    public boolean playSong(int startFrameNumber, int endFrameNumber, File songToPlay)
+    private boolean playSong(int startFrameNumber, int endFrameNumber, File songToPlay)
     {
         if(state == PlayerState.STATE_PLAYING)
             return true;
@@ -240,6 +242,16 @@ public class MP3Player extends AdvancedPlayer
             }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED);
         });
         t.start();
+    }
+
+    public void playNextSong()
+    {
+        /// Stop the currently playing song
+        this.stopSong();
+        /// Request the next song on the list
+        state = PlayerState.STATE_NEXT_SONG_REQUESTED;
+        /// Play the song
+        this.continuousPlay();
     }
 
     public void setPlaylist(Playlist playlist)

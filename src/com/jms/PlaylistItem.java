@@ -78,6 +78,15 @@ public class PlaylistItem {
             genre = null;
             year = 0;
         }
+
+        if(title.equals("") || artist.equals("") || album.equals(""))
+        {
+            title = null;
+            artist = null;
+            album = null;
+            genre = null;
+            year = 0;
+        }
         albumArt = loadAlbumArt();
     }
 
