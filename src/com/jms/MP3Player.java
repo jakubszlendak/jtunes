@@ -69,7 +69,7 @@ public class MP3Player extends AdvancedPlayer
         this.playlist = new Playlist();
     }
 
-    public void openFile(File file)
+    private void openFile(File file)
     {
         this.currentlyOpenedFile = file;
         try
@@ -111,58 +111,55 @@ public class MP3Player extends AdvancedPlayer
         openFile(songToPlay);
 
         state = PlayerState.STATE_PLAYING;
-       // Thread t = new Thread( ()->
-       // {
-            boolean frameNotAchieved = true;
-            boolean songPlayed = true;
-            /// Rewind to the start frame
-            while ((currentFrameNumber < startFrameNumber) && frameNotAchieved)
+
+        boolean frameNotAchieved = true;
+        boolean songPlayed = true;
+        /// Rewind to the start frame
+        while ((currentFrameNumber < startFrameNumber) && frameNotAchieved)
+        {
+            try
             {
-                try
-                {
-                    frameNotAchieved = skipFrame();
-                } catch (JavaLayerException e)
-                {
-                    e.printStackTrace();
-                }
+                frameNotAchieved = skipFrame();
+            } catch (JavaLayerException e)
+            {
+                e.printStackTrace();
+            }
+            currentFrameNumber++;
+        }
+
+        while ((currentFrameNumber < endFrameNumber) && songPlayed && state != PlayerState.STATE_PAUSED && state !=
+                PlayerState.STATE_STOPPED)
+        {
+            try
+            {
+                songPlayed = decodeFrame();
                 currentFrameNumber++;
-            }
-
-            while ((currentFrameNumber < endFrameNumber) && songPlayed && state != PlayerState.STATE_PAUSED && state !=
-                    PlayerState.STATE_STOPPED)
+            } catch (JavaLayerException e)
             {
-                try
-                {
-                    songPlayed = decodeFrame();
-                    currentFrameNumber++;
-                } catch (JavaLayerException e)
-                {
-                    System.out.println("Blad dekodowania ramki nr: " + currentFrameNumber);
+                System.out.println("Blad dekodowania ramki nr: " + currentFrameNumber);
 
-                }
             }
+        }
 
-            AudioDevice out = audio;
-            if (out != null)
+        AudioDevice out = audio;
+        if (out != null)
+        {
+            out.flush();
+            synchronized (this)
             {
-                out.flush();
-                synchronized (this)
-                {
-                    close();
-                }
+                close();
             }
+        }
         /// If there was no request to pause or stop the song - request next song
         if(state == PlayerState.STATE_PLAYING)
             state = PlayerState.STATE_NEXT_SONG_REQUESTED;
-        //}
-      //  );
-       // t.start();
+
         return false;
     }
 
     public void pauseSong()
     {
-        pausedOnFrame = currentFrameNumber - 4; /// Minus 4 frames for better impression after resume - the sound is
+        pausedOnFrame = currentFrameNumber - 3; /// Minus 3 frames for better impression after resume - the sound is
                                                 /// more consistent
         if(pausedOnFrame < 0)
             pausedOnFrame = 0;
@@ -200,6 +197,20 @@ public class MP3Player extends AdvancedPlayer
         return playlist.getCurrentElement().getFile();
     }
     /**
+     * This function sets the currently_played_song to the previous song on the playlist. It does playlist wrapping
+     */
+    private File getPrevSong()
+    {
+        ///   If we are have not played recently the last song, then increment the current song index
+        if(this.getPlaylist().getCurrentElementIndex() > 0)
+            this.getPlaylist().decCurrentElementIndex();
+        else    /**< Else, wrap the index and set it to the playlist start */
+            this.getPlaylist().setCurrentElementIndex(this.getPlaylist().getSize()-1);
+
+        /// Open the next file
+        return playlist.getCurrentElement().getFile();
+    }
+    /**
      * This function randomizes the next song which is to be played
      */
     private File randomizeNextSong()
@@ -232,7 +243,13 @@ public class MP3Player extends AdvancedPlayer
                 if(state != PlayerState.STATE_PAUSED && state != PlayerState.STATE_STOPPED)
                 {
                     if(randomOrInOrder == RandomOrContinuous.PLAY_IN_ORDER)
-                        playSong(0, Integer.MAX_VALUE, getNextSong());
+                    {
+                        /// If the next song was requested
+                        if(state != PlayerState.STATE_PREV_SONG_REQUESTED)
+                            playSong(0, Integer.MAX_VALUE, getNextSong());
+                        else
+                            playSong(0, Integer.MAX_VALUE, getPrevSong());      /// If the previous song was requested
+                    }
                     else
                         playSong(0, Integer.MAX_VALUE, randomizeNextSong());
                 }
@@ -249,6 +266,16 @@ public class MP3Player extends AdvancedPlayer
         this.stopSong();
         /// Request the next song on the list
         state = PlayerState.STATE_NEXT_SONG_REQUESTED;
+        /// Play the song
+        this.continuousPlay();
+    }
+
+    public void playPrevSong()
+    {
+        /// Stop the currently playing song
+        this.stopSong();
+        /// Request the next song on the list
+        state = PlayerState.STATE_PREV_SONG_REQUESTED;
         /// Play the song
         this.continuousPlay();
     }
