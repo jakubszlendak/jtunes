@@ -92,9 +92,15 @@ public class MainWindow extends JPanel
 
         // Setup playlist display list
         playlistDisplay = new JList();
+        JScrollPane scrollPane = new JScrollPane(playlistDisplay);
+        scrollPane.setPreferredSize(new Dimension(600, 200));
+        scrollPane.setMinimumSize(new Dimension(600, 200));
+
         playlistDisplay.setCellRenderer(new PlaylistItemRenderer());
-        playlistPanel.add(new JScrollPane(playlistDisplay));
+        playlistPanel.add(scrollPane);
         playlistPanel.add(playlistToolbar);
+//        playlistPanel.setMinimumSize(new Dimension(500, 100));
+//        playlistPanel.setPreferredSize(new Dimension(500, 100));
 
         mainPanel.add(playlistPanel, PLAYLIST_PANEL);
         mainPanel.add(editPanel, EDITOR_PANEL);
