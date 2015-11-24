@@ -253,6 +253,7 @@ public class MainWindow extends JPanel
         playButton.addActionListener(e2 -> player.continuousPlay());
         pauseButton.addActionListener(e2 -> player.pauseSong());
         stopButton.addActionListener(e2 -> player.stopSong());
+        randomButton.addActionListener(e2->player.toggleRandomOrInOrder());
 
         loadButton.addActionListener(e ->
         {

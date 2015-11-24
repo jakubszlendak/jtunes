@@ -22,7 +22,7 @@ public class MP3Player extends AdvancedPlayer
         STATE_NEXT_SONG_REQUESTED,
         STATE_PREV_SONG_REQUESTED
 }
-    private enum RandomOrContinuous
+    public enum RandomOrContinuous
     {
         PLAY_IN_ORDER,
         PLAY_RANDOM
@@ -326,6 +326,21 @@ public class MP3Player extends AdvancedPlayer
         state = PlayerState.STATE_PREV_SONG_REQUESTED;
         /// Play the song
         this.continuousPlay();
+    }
+
+    /**
+     * Toggles the player setting wheter to play songs randomly or in order
+     */
+    public void toggleRandomOrInOrder()
+    {
+        if(this.getRandomOrInOrder() == MP3Player.RandomOrContinuous.PLAY_IN_ORDER)
+        {
+            this.setRandomOrInOrder(MP3Player.RandomOrContinuous.PLAY_RANDOM);
+        }
+        else
+        {
+            this.setRandomOrInOrder(MP3Player.RandomOrContinuous.PLAY_IN_ORDER);
+        }
     }
 
     /**
