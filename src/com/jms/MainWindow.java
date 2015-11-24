@@ -257,13 +257,22 @@ public class MainWindow extends JPanel
         loadButton.addActionListener(e ->
         {
             final JFileChooser fc = new JFileChooser();
+            fc.setMultiSelectionEnabled(true);
             fc.setFileFilter(new FileNameExtensionFilter("MP3 and WAVE files.", "mp3", "wav", "wave"));
+
             fc.setCurrentDirectory(new File(this.playlist.getLastSongDir()));
             int retval = fc.showOpenDialog(this);
             if(retval == JFileChooser.APPROVE_OPTION)
             {
                 try {
-                    playlist.addPlaylistItem(new PlaylistItem(fc.getSelectedFile()));
+                    int cnt = 0;
+                    File array[] = fc.getSelectedFiles();
+                    while(cnt < array.length)
+                    {
+                        playlist.addPlaylistItem(new PlaylistItem(array[cnt++]));
+                    }
+
+                   // playlist.addPlaylistItem(new PlaylistItem(fc.getSelectedFile()));
                     this.playlist.setLastSongDir(fc.getCurrentDirectory().getAbsolutePath());
                 } catch (IOException e1) {
                     JOptionPane.showMessageDialog(this, "Error when opening file: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
