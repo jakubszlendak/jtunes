@@ -151,8 +151,9 @@ public class MP3Player extends AdvancedPlayer
                     close();
                 }
             }
-
-        state = PlayerState.STATE_NEXT_SONG_REQUESTED;
+        /// If there was no request to pause or stop the song - request next song
+        if(state == PlayerState.STATE_PLAYING)
+            state = PlayerState.STATE_NEXT_SONG_REQUESTED;
         //}
       //  );
        // t.start();
@@ -177,10 +178,11 @@ public class MP3Player extends AdvancedPlayer
 
     public void stopSong()
     {
+        state = PlayerState.STATE_STOPPED;
         this.stop();
         currentFrameNumber = 0;
         pausedOnFrame = 0;
-        state = PlayerState.STATE_STOPPED;
+
     }
 
     /**
