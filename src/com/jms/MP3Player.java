@@ -21,7 +21,7 @@ public class MP3Player extends AdvancedPlayer
         STATE_NO_FILE,
         STATE_NEXT_SONG_REQUESTED,
         STATE_PREV_SONG_REQUESTED
-    }
+}
     private enum RandomOrContinuous
     {
         PLAY_IN_ORDER,
@@ -100,7 +100,7 @@ public class MP3Player extends AdvancedPlayer
 
 
 
-    public boolean playSong(int startFrameNumber, int endFrameNumber, File songToPlay)
+    private boolean playSong(int startFrameNumber, int endFrameNumber, File songToPlay)
     {
         if(state == PlayerState.STATE_PLAYING)
             return true;
@@ -241,6 +241,16 @@ public class MP3Player extends AdvancedPlayer
             }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED);
         });
         t.start();
+    }
+
+    public void playNextSong()
+    {
+        /// Stop the currently playing song
+        this.stopSong();
+        /// Request the next song on the list
+        state = PlayerState.STATE_NEXT_SONG_REQUESTED;
+        /// Play the song
+        this.continuousPlay();
     }
 
     public void setPlaylist(Playlist playlist)

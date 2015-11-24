@@ -31,16 +31,6 @@ public class Main {
         }
 
 
-        /*player.openFile(new File("01_The_Trail.mp3"));
-        try
-        {
-            player.getPlayer().play(0, Integer.MAX_VALUE);
-        } catch (JavaLayerException e)
-        {
-            e.printStackTrace();
-        }*/
-        //  player.play(new File("01_The_Trail.mp3"));
-
 
     }
 }
