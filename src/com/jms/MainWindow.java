@@ -6,6 +6,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -220,8 +221,8 @@ public class MainWindow extends JPanel
         playbackToolbar.add(playButton);
         playbackToolbar.add(pauseButton);
         playbackToolbar.add(stopButton);
-        playbackToolbar.add(nextButton);
         playbackToolbar.add(prevButton);
+        playbackToolbar.add(nextButton);
         playbackToolbar.addSeparator();
         playbackToolbar.add(randomButton);
         playbackToolbar.addSeparator();
@@ -257,11 +258,13 @@ public class MainWindow extends JPanel
         {
             final JFileChooser fc = new JFileChooser();
             fc.setFileFilter(new FileNameExtensionFilter("MP3 and WAVE files.", "mp3", "wav", "wave"));
+            fc.setCurrentDirectory(new File(this.playlist.getLastSongDir()));
             int retval = fc.showOpenDialog(this);
             if(retval == JFileChooser.APPROVE_OPTION)
             {
                 try {
                     playlist.addPlaylistItem(new PlaylistItem(fc.getSelectedFile()));
+                    this.playlist.setLastSongDir(fc.getCurrentDirectory().getAbsolutePath());
                 } catch (IOException e1) {
                     JOptionPane.showMessageDialog(this, "Error when opening file: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (TagException e1) {
@@ -269,6 +272,16 @@ public class MainWindow extends JPanel
                 }
             }
 
+        });
+
+        prevButton.addActionListener(e ->
+        {
+            this.player.playPrevSong();
+        });
+
+        nextButton.addActionListener(e ->
+        {
+            this.player.playNextSong();
         });
     }
 

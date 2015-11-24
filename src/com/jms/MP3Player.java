@@ -200,6 +200,13 @@ public class MP3Player extends AdvancedPlayer
     public void stopSong()
     {
         state = PlayerState.STATE_STOPPED;
+        try
+        {
+            Thread.sleep(10);
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
         this.stop();
         currentFrameNumber = 0;
         pausedOnFrame = 0;
