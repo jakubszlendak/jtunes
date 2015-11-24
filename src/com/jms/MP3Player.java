@@ -22,7 +22,7 @@ public class MP3Player extends AdvancedPlayer
         STATE_NEXT_SONG_REQUESTED,
         STATE_PREV_SONG_REQUESTED
     }
-    private enum RandomOrContinuous
+    private enum PlaybackOrder
     {
         PLAY_IN_ORDER,
         PLAY_RANDOM
@@ -33,11 +33,10 @@ public class MP3Player extends AdvancedPlayer
     private File                    currentlyOpenedFile;    /**< Currently processed file **/
     private FileInputStream         stream;                 /**< Buffer from which audio frames are taken **/
     private int                     currentFrameNumber;     /**< Number of the currently decoded frame **/
-    private int                     pausedOnFrame;          /**< Number of the frame which was decoded last when pause event
- came**/
+    private int                     pausedOnFrame;          /**< Number of the frame which was decoded last when pause event came**/
 
     private PlayerState             state;
-    private RandomOrContinuous      randomOrInOrder = RandomOrContinuous.PLAY_IN_ORDER;
+    private PlaybackOrder      randomOrInOrder = PlaybackOrder.PLAY_IN_ORDER;
 
 
     public MP3Player(File file) throws JavaLayerException
@@ -231,7 +230,7 @@ public class MP3Player extends AdvancedPlayer
             {
                 if(state != PlayerState.STATE_PAUSED && state != PlayerState.STATE_STOPPED)
                 {
-                    if(randomOrInOrder == RandomOrContinuous.PLAY_IN_ORDER)
+                    if(randomOrInOrder == PlaybackOrder.PLAY_IN_ORDER)
                         playSong(0, Integer.MAX_VALUE, getNextSong());
                     else
                         playSong(0, Integer.MAX_VALUE, randomizeNextSong());
@@ -268,12 +267,12 @@ public class MP3Player extends AdvancedPlayer
         return equalizer;
     }
 
-    public RandomOrContinuous getRandomOrInOrder()
+    public PlaybackOrder getRandomOrInOrder()
     {
         return randomOrInOrder;
     }
 
-    public void setRandomOrInOrder(RandomOrContinuous randomOrInOrder)
+    public void setPlaybackOrder(PlaybackOrder randomOrInOrder)
     {
         this.randomOrInOrder = randomOrInOrder;
     }
