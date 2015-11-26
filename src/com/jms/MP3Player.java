@@ -293,6 +293,14 @@ public class MP3Player extends AdvancedPlayer
     {
         /// Stop the currently playing song
         this.stopSong();
+        try
+        {
+            /// Give some time for the thread responsible for song playing to shutdown
+            Thread.sleep(100);
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
         /// Request the next song on the list
         state = PlayerState.STATE_NEXT_SONG_REQUESTED;
         /// Play the song
@@ -306,10 +314,34 @@ public class MP3Player extends AdvancedPlayer
     {
         /// Stop the currently playing song
         this.stopSong();
+
+        try
+        {
+            /// Give some time for the thread responsible for song playing to shutdown
+            Thread.sleep(100);
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
         /// Request the next song on the list
         state = PlayerState.STATE_PREV_SONG_REQUESTED;
         /// Play the song
         this.continuousPlay();
+    }
+
+    /**
+     * Toggles the player setting wheter to play songs randomly or in order
+     */
+    public void toggleRandomOrInOrder()
+    {
+        if(this.getPlaybackOrder() == MP3Player.PlaybackOrder.PLAY_IN_ORDER)
+        {
+            this.setPlaybackOrder(MP3Player.PlaybackOrder.PLAY_RANDOM);
+        }
+        else
+        {
+            this.setPlaybackOrder(MP3Player.PlaybackOrder.PLAY_IN_ORDER);
+        }
     }
 
     /**

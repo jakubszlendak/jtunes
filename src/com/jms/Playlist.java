@@ -14,6 +14,8 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
     private LinkedList<PlaylistItem> playlist;
     private ListDataListener listener;
     private int currentElementIndex;
+    private String lastSongDir = "C:/Users/";
+
 
 
     Playlist(){
@@ -108,7 +110,7 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
      */
     public void decCurrentElementIndex()
     {
-        if(currentElementIndex < this.getSize() - 1)
+        if(currentElementIndex > 0)
             this.currentElementIndex--;
     }
 
@@ -125,5 +127,16 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
 
     public PlaylistItem getCurrentElement() {
         return playlist.get(currentElementIndex);
+    }
+
+    public String getLastSongDir()
+    {
+        return lastSongDir;
+    }
+
+    public void setLastSongDir(String lastSongDir)
+    {
+
+        this.lastSongDir = lastSongDir;
     }
 }

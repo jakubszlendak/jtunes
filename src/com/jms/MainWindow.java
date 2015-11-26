@@ -6,6 +6,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -92,9 +93,15 @@ public class MainWindow extends JPanel
 
         // Setup playlist display list
         playlistDisplay = new JList();
+        JScrollPane scrollPane = new JScrollPane(playlistDisplay);
+        scrollPane.setPreferredSize(new Dimension(800, 200));
+        scrollPane.setMinimumSize(new Dimension(600, 200));
+
         playlistDisplay.setCellRenderer(new PlaylistItemRenderer());
-        playlistPanel.add(new JScrollPane(playlistDisplay));
+        playlistPanel.add(scrollPane);
         playlistPanel.add(playlistToolbar);
+//        playlistPanel.setMinimumSize(new Dimension(500, 100));
+//        playlistPanel.setPreferredSize(new Dimension(500, 100));
 
         mainPanel.add(playlistPanel, PLAYLIST_PANEL);
         mainPanel.add(editPanel, EDITOR_PANEL);
@@ -214,8 +221,8 @@ public class MainWindow extends JPanel
         playbackToolbar.add(playButton);
         playbackToolbar.add(pauseButton);
         playbackToolbar.add(stopButton);
-        playbackToolbar.add(nextButton);
         playbackToolbar.add(prevButton);
+        playbackToolbar.add(nextButton);
         playbackToolbar.addSeparator();
         playbackToolbar.add(randomButton);
         playbackToolbar.addSeparator();
@@ -248,16 +255,28 @@ public class MainWindow extends JPanel
         stopButton.addActionListener(e2 -> player.stopSong());
         nextButton.addActionListener(e2 -> player.playNextSong());
         prevButton.addActionListener(e2 -> player.playPrevSong());
+        randomButton.addActionListener(e2->player.toggleRandomOrInOrder());
 
         loadButton.addActionListener(e ->
         {
             final JFileChooser fc = new JFileChooser();
+            fc.setMultiSelectionEnabled(true);
             fc.setFileFilter(new FileNameExtensionFilter("MP3 and WAVE files.", "mp3", "wav", "wave"));
+
+            fc.setCurrentDirectory(new File(this.playlist.getLastSongDir()));
             int retval = fc.showOpenDialog(this);
             if(retval == JFileChooser.APPROVE_OPTION)
             {
                 try {
-                    playlist.addPlaylistItem(new PlaylistItem(fc.getSelectedFile()));
+                    int cnt = 0;
+                    File array[] = fc.getSelectedFiles();
+                    while(cnt < array.length)
+                    {
+                        playlist.addPlaylistItem(new PlaylistItem(array[cnt++]));
+                    }
+
+                   // playlist.addPlaylistItem(new PlaylistItem(fc.getSelectedFile()));
+                    this.playlist.setLastSongDir(fc.getCurrentDirectory().getAbsolutePath());
                 } catch (IOException e1) {
                     JOptionPane.showMessageDialog(this, "Error when opening file: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (TagException e1) {
@@ -265,6 +284,16 @@ public class MainWindow extends JPanel
                 }
             }
 
+        });
+
+        prevButton.addActionListener(e ->
+        {
+            this.player.playPrevSong();
+        });
+
+        nextButton.addActionListener(e ->
+        {
+            this.player.playNextSong();
         });
     }
 

@@ -24,6 +24,7 @@ public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<Pla
     public PlaylistItemRenderer() {
 
         setOpaque(true);
+//        this.setMaximumSize(new Dimension(400, 50));
 
         // Load default album art if not already loaded
         if(noAlbumArtIcon == null)
@@ -35,11 +36,11 @@ public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<Pla
         genre = new JLabel("Not a music!");
         albumArt = new JLabel(noAlbumArtIcon);
 
-        this.setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout(5, 5));
         add(description, BorderLayout.CENTER);
         add(albumArt, BorderLayout.LINE_START);
         add(trackLength, BorderLayout.LINE_END);
-        add(genre, BorderLayout.PAGE_END);
+//        add(genre, BorderLayout.PAGE_END);
 
     }
 
@@ -91,14 +92,14 @@ public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<Pla
             // check if this cell is selected
         } else if (isSelected)
         {
-            background = Color.RED;
+            background = Color.LIGHT_GRAY;
             foreground = Color.WHITE;
 
             // unselected, and not the DnD drop location
         } else
         {
             background = Color.WHITE;
-            foreground = Color.BLACK;
+            foreground = Color.LIGHT_GRAY;
         }
 
         setBackground(background);

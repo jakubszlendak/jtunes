@@ -1,16 +1,21 @@
 package com.jms;
 
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Map;
 
 import org.farng.mp3.MP3File;
 import org.farng.mp3.id3.ID3v1;
 import org.farng.mp3.TagException;
 import org.farng.mp3.id3.AbstractID3v2;
-
+import org.tritonus.share.sampled.file.TAudioFileFormat;
+//import org.tritonus.share.
 /**
  * Created by jakub on 16.11.15.
  */
@@ -50,6 +55,21 @@ public class PlaylistItem {
      */
     public PlaylistItem(File file) throws IOException, TagException
     {
+        AudioFileFormat fileFormat = null;
+        try {
+            fileFormat = AudioSystem.getAudioFileFormat(file);
+            if(fileFormat instanceof TAudioFileFormat)
+            {
+                Map<?, ?> properties = ((TAudioFileFormat) fileFormat).properties();
+                String key = "duration";
+                long microseconds = (Long) properties.get(key);
+                int miliseconds = (int)(microseconds/1000);
+                duration = miliseconds/1000;;
+            }
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        }
+
         this.file = file;
         mp3File = new MP3File(file);
         if(mp3File.hasID3v1Tag())
@@ -60,6 +80,7 @@ public class PlaylistItem {
             album = tag.getAlbum();
             genre = tag.getSongGenre();
             year = Integer.parseInt(tag.getYear());
+//            duration = tag.get
         }
         else if(mp3File.hasID3v2Tag())
         {
@@ -68,6 +89,7 @@ public class PlaylistItem {
             artist =tag.getLeadArtist();
             album = tag.getAlbumTitle();
             genre = tag.getSongGenre();
+//            duration = tag.getFrameCount();
 //            year = Integer.parseInt(tag.getYearReleased());
         }
         else
