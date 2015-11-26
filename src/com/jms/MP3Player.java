@@ -70,7 +70,11 @@ public class MP3Player extends AdvancedPlayer
         this.playlist = new Playlist();
     }
 
-    public void openFile(File file)
+    /**
+     * This function prepares the file connected resources - it creates buffers, audiodevice and decoder
+     * @param file - file which is about to be opened(played)
+     */
+    private void openFile(File file)
     {
         this.currentlyOpenedFile = file;
         try
@@ -100,7 +104,14 @@ public class MP3Player extends AdvancedPlayer
     }
 
 
-
+    /**
+     * It is main function which plays song. It blocks execution, so it is started in its own Thread. It decodes
+     * frames and sends them to the AudioDevice buffer
+     * @param startFrameNumber - the frame number from which the play should start.
+     * @param endFrameNumber - the last frame number which should be played
+     * @param songToPlay - File containing the song which is to be played
+     * @return true - if song has ended
+     */
     private boolean playSong(int startFrameNumber, int endFrameNumber, File songToPlay)
     {
         if(state == PlayerState.STATE_PLAYING)
@@ -112,58 +123,60 @@ public class MP3Player extends AdvancedPlayer
         openFile(songToPlay);
 
         state = PlayerState.STATE_PLAYING;
-       // Thread t = new Thread( ()->
-       // {
-            boolean frameNotAchieved = true;
-            boolean songPlayed = true;
-            /// Rewind to the start frame
-            while ((currentFrameNumber < startFrameNumber) && frameNotAchieved)
+
+        boolean frameNotAchieved = true;
+        boolean songPlayed = true;
+        /// Rewind to the start frame
+        while ((currentFrameNumber < startFrameNumber) && frameNotAchieved)
+        {
+            try
             {
-                try
-                {
-                    frameNotAchieved = skipFrame();
-                } catch (JavaLayerException e)
-                {
-                    e.printStackTrace();
-                }
+                frameNotAchieved = skipFrame();
+            } catch (JavaLayerException e)
+            {
+                e.printStackTrace();
+            }
+            currentFrameNumber++;
+        }
+
+        while ((currentFrameNumber < endFrameNumber) && songPlayed && state != PlayerState.STATE_PAUSED && state !=
+                PlayerState.STATE_STOPPED)
+        {
+            try
+            {
+                songPlayed = decodeFrame();
                 currentFrameNumber++;
-            }
-
-            while ((currentFrameNumber < endFrameNumber) && songPlayed && state != PlayerState.STATE_PAUSED && state !=
-                    PlayerState.STATE_STOPPED)
+            } catch (JavaLayerException e)
             {
-                try
-                {
-                    songPlayed = decodeFrame();
-                    currentFrameNumber++;
-                } catch (JavaLayerException e)
-                {
-                    System.out.println("Blad dekodowania ramki nr: " + currentFrameNumber);
+                System.out.println("Blad dekodowania ramki nr: " + currentFrameNumber);
 
-                }
             }
+        }
 
-            AudioDevice out = audio;
-            if (out != null)
+        AudioDevice out = audio;
+        if (out != null)
+        {
+            out.flush();
+            synchronized (this)
             {
-                out.flush();
-                synchronized (this)
-                {
-                    close();
-                }
+                close();
             }
+        }
         /// If there was no request to pause or stop the song - request next song
         if(state == PlayerState.STATE_PLAYING)
             state = PlayerState.STATE_NEXT_SONG_REQUESTED;
-        //}
-      //  );
-       // t.start();
+
         return false;
     }
 
+    /**
+     *  Pauses the song on the currently played frame. If the state != STATE_PLAYING, it does nothing
+     */
     public void pauseSong()
     {
-        pausedOnFrame = currentFrameNumber - 4; /// Minus 4 frames for better impression after resume - the sound is
+        if(state != PlayerState.STATE_PLAYING)
+            return;
+        pausedOnFrame = currentFrameNumber - 3; /// Minus 3 frames for better impression after resume - the sound is
                                                 /// more consistent
         if(pausedOnFrame < 0)
             pausedOnFrame = 0;
@@ -172,11 +185,19 @@ public class MP3Player extends AdvancedPlayer
         this.stop();
     }
 
+    /**
+     * Resumes the paused song from the moment it was paused on. If the state != STATE_PAUSED, it does nothing
+     */
     public void resumeSong()
     {
+        if(state != PlayerState.STATE_PAUSED)
+            return;
         playSong(pausedOnFrame, Integer.MAX_VALUE, currentlyOpenedFile);
     }
 
+    /**
+     * Stops the currently played song and frees resources connected with it
+     */
     public void stopSong()
     {
         state = PlayerState.STATE_STOPPED;
@@ -196,6 +217,20 @@ public class MP3Player extends AdvancedPlayer
             this.getPlaylist().incCurrentElementIndex();
         else    /**< Else, wrap the index and set it to the playlist start */
             this.getPlaylist().setCurrentElementIndex(0);
+
+        /// Open the next file
+        return playlist.getCurrentElement().getFile();
+    }
+    /**
+     * This function sets the currently_played_song to the previous song on the playlist. It does playlist wrapping
+     */
+    private File getPrevSong()
+    {
+        ///   If we are have not played recently the last song, then increment the current song index
+        if(this.getPlaylist().getCurrentElementIndex() > 0)
+            this.getPlaylist().decCurrentElementIndex();
+        else    /**< Else, wrap the index and set it to the playlist start */
+            this.getPlaylist().setCurrentElementIndex(this.getPlaylist().getSize()-1);
 
         /// Open the next file
         return playlist.getCurrentElement().getFile();
@@ -233,7 +268,13 @@ public class MP3Player extends AdvancedPlayer
                 if(state != PlayerState.STATE_PAUSED && state != PlayerState.STATE_STOPPED)
                 {
                     if(randomOrInOrder == PlaybackOrder.PLAY_IN_ORDER)
-                        playSong(0, Integer.MAX_VALUE, getNextSong());
+                    {
+                        /// If the next song was requested
+                        if(state != PlayerState.STATE_PREV_SONG_REQUESTED)
+                            playSong(0, Integer.MAX_VALUE, getNextSong());
+                        else
+                            playSong(0, Integer.MAX_VALUE, getPrevSong());      /// If the previous song was requested
+                    }
                     else
                         playSong(0, Integer.MAX_VALUE, randomizeNextSong());
                 }
@@ -244,6 +285,10 @@ public class MP3Player extends AdvancedPlayer
         t.start();
     }
 
+    /**
+     * Stops the currently played song, and starts the next one on the playlist. If the last played song was the last
+     * on the list, than it plays the first one
+     */
     public void playNextSong()
     {
         /// Stop the currently playing song
@@ -253,37 +298,80 @@ public class MP3Player extends AdvancedPlayer
         /// Play the song
         this.continuousPlay();
     }
+    /**
+     * Stops the currently played song, and starts the previous one on the playlist. If the last played song was the
+     * first one on the list, than it plays the last one
+     */
+    public void playPrevSong()
+    {
+        /// Stop the currently playing song
+        this.stopSong();
+        /// Request the next song on the list
+        state = PlayerState.STATE_PREV_SONG_REQUESTED;
+        /// Play the song
+        this.continuousPlay();
+    }
 
+    /**
+     * This is the setter, to set the playlist
+     * @param playlist - playlist ot set
+     */
     public void setPlaylist(Playlist playlist)
     {
         this.playlist = playlist;
     }
 
+    /**
+     * This is the setter for equalizer of the player
+     * @param equalizer - equalizer to be set
+     */
     public void setEqualizer(Equalizer equalizer)
     {
         this.equalizer = equalizer;
     }
 
+    /**
+     * Returns the currently opened(most currently played) file
+     * @return File
+     */
     public File getCurrentlyOpenedFile()
     {
         return currentlyOpenedFile;
     }
 
+    /**
+     * Returns the playlist which is set in the MP3Player
+     * @return
+     */
     public Playlist getPlaylist()
     {
         return playlist;
     }
 
+    /**
+     * Returns the equalizer which is set in the MP3Player
+     * @return
+     */
     public Equalizer getEqualizer()
     {
         return equalizer;
     }
 
-    public PlaybackOrder getRandomOrInOrder()
+    /**
+     * Gets the flag @ref randomOrInOrder value.
+     * @return       PLAY_IN_ORDER - if the playlist is played in order
+     *               PLAY_RANDOM - if the songs are chosen from the playlist randomly
+     */
+    public PlaybackOrder getPlaybackOrder()
     {
         return randomOrInOrder;
     }
 
+    /**
+     * This is setter for the flag @ref randomOrInOrder value.
+     * @param randomOrInOrder -   PLAY_IN_ORDER - if the playlist is to be played in order
+     *                            PLAY_RANDOM - if the songs are to be chosen from the playlist randomly
+     */
     public void setPlaybackOrder(PlaybackOrder randomOrInOrder)
     {
         this.randomOrInOrder = randomOrInOrder;

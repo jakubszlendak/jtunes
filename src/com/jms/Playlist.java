@@ -94,10 +94,22 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
         return playlist.get(index);
     }
 
+    /**
+     * Increments the list's current index for choosing the next element
+     */
     public void incCurrentElementIndex()
     {
         if(currentElementIndex < this.getSize() - 1)
             this.currentElementIndex++;
+    }
+
+    /**
+     * Decrements the list's current index for choosing the next element
+     */
+    public void decCurrentElementIndex()
+    {
+        if(currentElementIndex < this.getSize() - 1)
+            this.currentElementIndex--;
     }
 
     public void setCurrentElementIndex(int newIndex)

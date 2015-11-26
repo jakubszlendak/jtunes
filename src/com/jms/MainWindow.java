@@ -194,11 +194,11 @@ public class MainWindow extends JPanel
         stopButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(STOP_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         stopButton.setToolTipText("Stop");
 
-        nextButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(NEXT_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
-        nextButton.setToolTipText("Next track");;
-
         prevButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(PREV_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         prevButton.setToolTipText("Previous track");
+
+        nextButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(NEXT_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
+        nextButton.setToolTipText("Next track");;
 
         randomButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(SHUFFLE_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         randomButton.setToolTipText("Play random track");
@@ -247,7 +247,7 @@ public class MainWindow extends JPanel
         pauseButton.addActionListener(e2 -> player.pauseSong());
         stopButton.addActionListener(e2 -> player.stopSong());
         nextButton.addActionListener(e2 -> player.playNextSong());
-//        prevButton.addActionListener(e2 -> player.playPreviousSong());
+        prevButton.addActionListener(e2 -> player.playPrevSong());
 
         loadButton.addActionListener(e ->
         {
