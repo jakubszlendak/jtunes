@@ -6,6 +6,8 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -33,6 +35,8 @@ public class MainWindow extends JPanel
     private final static String PLAYLIST_PANEL = "Playlist";
     private final static String EDITOR_PANEL = "Editor";
 
+    private final static String[] PLAYBACK_ORDER_LABELS = {"Repeat playlist", "Shuffle playlist", "Play single", "Repeat single"};
+
     // Playback toolbar
     private JToolBar playbackToolbar;
     private JButton playButton;
@@ -40,9 +44,9 @@ public class MainWindow extends JPanel
     private JButton stopButton;
     private JButton nextButton;
     private JButton prevButton;
-    private JButton randomButton;
     private JButton loadButton;
     private JButton editButton;
+    private JComboBox orderComboBox;
 
     //Playlist toolbar
     private JToolBar playlistToolbar;
@@ -100,6 +104,12 @@ public class MainWindow extends JPanel
         playlistDisplay.setCellRenderer(new PlaylistItemRenderer());
         playlistPanel.add(scrollPane);
         playlistPanel.add(playlistToolbar);
+        playlistDisplay.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+            }
+        });
 //        playlistPanel.setMinimumSize(new Dimension(500, 100));
 //        playlistPanel.setPreferredSize(new Dimension(500, 100));
 
@@ -205,16 +215,17 @@ public class MainWindow extends JPanel
         prevButton.setToolTipText("Previous track");
 
         nextButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(NEXT_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
-        nextButton.setToolTipText("Next track");;
-
-        randomButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(SHUFFLE_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
-        randomButton.setToolTipText("Play random track");
+        nextButton.setToolTipText("Next track");
 
         loadButton = new JButton(new ImageIcon(PlaylistItemRenderer.getScaledImage(new ImageIcon(LOAD_ICON_PATH).getImage(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE)));
         loadButton.setToolTipText("Load new track from filesystem");
 
-        editButton = new JButton("Edit mode");
+        editButton = new JButton("Open editor...");
         editButton.setToolTipText("Switch to edit mode");
+
+        orderComboBox = new JComboBox(PLAYBACK_ORDER_LABELS);
+        orderComboBox.setPrototypeDisplayValue("Repeat playlist");
+        orderComboBox.setMaximumSize(orderComboBox.getPreferredSize());
 
         playbackToolbar = new JToolBar("Playback toolbar", JToolBar.HORIZONTAL);
 
@@ -224,10 +235,11 @@ public class MainWindow extends JPanel
         playbackToolbar.add(prevButton);
         playbackToolbar.add(nextButton);
         playbackToolbar.addSeparator();
-        playbackToolbar.add(randomButton);
-        playbackToolbar.addSeparator();
         playbackToolbar.add(loadButton);
         playbackToolbar.addSeparator();
+        playbackToolbar.add(orderComboBox);
+        playbackToolbar.addSeparator();
+
         playbackToolbar.add(editButton);
 
         playbackToolbar.setFloatable(false);
@@ -250,13 +262,50 @@ public class MainWindow extends JPanel
         });
 
         // Play button action
-        playButton.addActionListener(e2 -> player.continuousPlay());
+        playButton.addActionListener(e2 ->
+        {
+            switch (player.getPlaybackOrder())
+            {
+                case PLAY_IN_ORDER:
+                    player.continuousPlay();
+                    break;
+                case PLAY_RANDOM:
+                    player.continuousPlay();
+                    break;
+                case PLAY_SINGLE:
+                    player.playPlaylistItem(playlistDisplay.getSelectedIndex());
+                    break;
+                case REPEAT_SINGLE:
+                    player.playPlaylistItem(playlistDisplay.getSelectedIndex());
+                    break;
+                default: break;
+
+            }
+            player.continuousPlay();
+        });
         pauseButton.addActionListener(e2 -> player.pauseSong());
         stopButton.addActionListener(e2 -> player.stopSong());
         nextButton.addActionListener(e2 -> player.playNextSong());
         prevButton.addActionListener(e2 -> player.playPrevSong());
-        randomButton.addActionListener(e2->player.toggleRandomOrInOrder());
-
+        orderComboBox.addActionListener(e3 -> {
+            JComboBox cb = (JComboBox)e3.getSource();
+            switch (cb.getSelectedIndex())
+            {
+                case 0:
+                    player.setPlaybackOrder(MP3Player.PlaybackOrder.PLAY_IN_ORDER);
+                    break;
+                case 1:
+                    player.setPlaybackOrder(MP3Player.PlaybackOrder.PLAY_RANDOM);
+                    break;
+                case 2:
+                    player.setPlaybackOrder(MP3Player.PlaybackOrder.PLAY_SINGLE);
+                    break;
+                case 3:
+                    player.setPlaybackOrder(MP3Player.PlaybackOrder.REPEAT_SINGLE);
+                    break;
+                default: break;
+            }
+        });
         loadButton.addActionListener(e ->
         {
             final JFileChooser fc = new JFileChooser();
@@ -283,18 +332,9 @@ public class MainWindow extends JPanel
                     JOptionPane.showMessageDialog(this, "Error when reading tags: " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
-
         });
 
-        prevButton.addActionListener(e ->
-        {
-            this.player.playPrevSong();
-        });
 
-        nextButton.addActionListener(e ->
-        {
-            this.player.playNextSong();
-        });
     }
 
     /**

@@ -13,6 +13,8 @@ import java.io.*;
  */
 public class MP3Player extends AdvancedPlayer
 {
+
+
     public enum PlayerState
     {
         STATE_STOPPED,
@@ -20,12 +22,15 @@ public class MP3Player extends AdvancedPlayer
         STATE_PLAYING,
         STATE_NO_FILE,
         STATE_NEXT_SONG_REQUESTED,
-        STATE_PREV_SONG_REQUESTED
+        STATE_PREV_SONG_REQUESTED,
+        STATE_SONG_REQUESTED
     }
 
-    private enum PlaybackOrder
+    public enum PlaybackOrder
     {
         PLAY_IN_ORDER,
+        REPEAT_SINGLE,
+        PLAY_SINGLE,
         PLAY_RANDOM
     }
 
@@ -36,9 +41,10 @@ public class MP3Player extends AdvancedPlayer
     private FileInputStream         stream;                 /**< Buffer from which audio frames are taken **/
     private int                     currentFrameNumber;     /**< Number of the currently decoded frame **/
     private int                     pausedOnFrame;          /**< Number of the frame which was decoded last when pause event came**/
+    private int                     requestedItemIndex;     /**< If song requested from playlist, this is the item number */
 
     private PlayerState             state;
-    private PlaybackOrder           randomOrInOrder = PlaybackOrder.PLAY_IN_ORDER;
+    private PlaybackOrder           playbackOrder = PlaybackOrder.PLAY_IN_ORDER;
 
 
     public MP3Player(File file) throws JavaLayerException
@@ -207,6 +213,10 @@ public class MP3Player extends AdvancedPlayer
 
     }
 
+    private File getCurrentSong()
+    {
+        return playlist.getCurrentElement().getFile();
+    }
     /**
      * This function sets the currently_played_song to the next song on the playlist. It does playlist wrapping
      */
@@ -265,20 +275,40 @@ public class MP3Player extends AdvancedPlayer
         {
             do
             {
+                // If not paused
                 if(state != PlayerState.STATE_PAUSED && state != PlayerState.STATE_STOPPED)
                 {
-                    if(randomOrInOrder == PlaybackOrder.PLAY_IN_ORDER)
+                    if(playbackOrder == PlaybackOrder.REPEAT_SINGLE)
                     {
-                        /// If the next song was requested
-                        if(state != PlayerState.STATE_PREV_SONG_REQUESTED)
-                            playSong(0, Integer.MAX_VALUE, getNextSong());
-                        else
-                            playSong(0, Integer.MAX_VALUE, getPrevSong());      /// If the previous song was requested
+                        playSong(0, Integer.MAX_VALUE, getCurrentSong());
                     }
-                    else
-                        playSong(0, Integer.MAX_VALUE, randomizeNextSong());
+                    if(playbackOrder == PlaybackOrder.PLAY_SINGLE)
+                    {
+                        playSong(0, Integer.MAX_VALUE, getCurrentSong());
+                        this.stopSong();
+                        return;
+                    }
+                    if(playbackOrder == PlaybackOrder.PLAY_IN_ORDER)
+                    {
+                        /// If user requested particular song from playlist
+                        if(state == PlayerState.STATE_SONG_REQUESTED)
+                            playSong(0, Integer.MAX_VALUE, getCurrentSong());
+                        else if(state == PlayerState.STATE_PREV_SONG_REQUESTED) // If previous song requested
+                            playSong(0, Integer.MAX_VALUE, getPrevSong());
+                        else
+                            playSong(0, Integer.MAX_VALUE, getNextSong());      /// If the previous song was requested
+                    }
+                    if(playbackOrder == PlaybackOrder.PLAY_RANDOM) //if random play enabled
+                    {
+                        if(state == PlayerState.STATE_SONG_REQUESTED)
+                            playSong(0, Integer.MAX_VALUE, getCurrentSong());
+                        if(state == PlayerState.STATE_PREV_SONG_REQUESTED)
+                            playSong(0, Integer.MAX_VALUE, randomizeNextSong());
+                        else
+                            playSong(0, Integer.MAX_VALUE, randomizeNextSong());
+                    }
                 }
-                else
+                else //if paused, just resume
                    resumeSong();
             }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED);
         });
@@ -329,10 +359,26 @@ public class MP3Player extends AdvancedPlayer
         this.continuousPlay();
     }
 
+    public void playPlaylistItem(int playlistIndex)
+    {
+        this.stopSong();
+        try
+        {
+            /// Give some time for the thread responsible for song playing to shutdown
+            Thread.sleep(100);
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        state = PlayerState.STATE_SONG_REQUESTED;
+        playlist.setCurrentElementIndex(playlistIndex);
+        this.continuousPlay();
+
+    }
     /**
      * Toggles the player setting wheter to play songs randomly or in order
      */
-    public void toggleRandomOrInOrder()
+    public void setPlaybackOrder()
     {
         if(this.getPlaybackOrder() == MP3Player.PlaybackOrder.PLAY_IN_ORDER)
         {
@@ -390,22 +436,22 @@ public class MP3Player extends AdvancedPlayer
     }
 
     /**
-     * Gets the flag @ref randomOrInOrder value.
+     * Gets the flag @ref playbackOrder value.
      * @return       PLAY_IN_ORDER - if the playlist is played in order
      *               PLAY_RANDOM - if the songs are chosen from the playlist randomly
      */
     public PlaybackOrder getPlaybackOrder()
     {
-        return randomOrInOrder;
+        return playbackOrder;
     }
 
     /**
-     * This is setter for the flag @ref randomOrInOrder value.
-     * @param randomOrInOrder -   PLAY_IN_ORDER - if the playlist is to be played in order
+     * This is setter for the flag @ref playbackOrder value.
+     * @param playbackOrder -   PLAY_IN_ORDER - if the playlist is to be played in order
      *                            PLAY_RANDOM - if the songs are to be chosen from the playlist randomly
      */
-    public void setPlaybackOrder(PlaybackOrder randomOrInOrder)
+    public void setPlaybackOrder(PlaybackOrder playbackOrder)
     {
-        this.randomOrInOrder = randomOrInOrder;
+        this.playbackOrder = playbackOrder;
     }
 }
