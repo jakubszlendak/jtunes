@@ -58,6 +58,9 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
     {
         if(index >= 0 && index <playlist.size()){
             PlaylistItem tmp = playlist.remove(index);
+            if(currentElementIndex >= getSize())
+                currentElementIndex = getSize() - 1;
+
             fireIntervalRemoved(tmp, index, index);
             return tmp;
         }

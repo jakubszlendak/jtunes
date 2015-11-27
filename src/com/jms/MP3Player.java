@@ -125,6 +125,13 @@ public class MP3Player extends AdvancedPlayer
      */
     private boolean playSong(int startFrameNumber, int endFrameNumber, File songToPlay)
     {
+        /// Check if the playlist isn't empty
+        if(songToPlay == null)
+        {
+            state = PlayerState.STATE_NO_FILE;
+            return false;
+        }
+
         if(state == PlayerState.STATE_PLAYING)
             return true;
 
@@ -134,6 +141,7 @@ public class MP3Player extends AdvancedPlayer
         openFile(songToPlay);
        // System.out.println(((getCurrentSongSizeMs()/1000)));
         state = PlayerState.STATE_PLAYING;
+
 
         boolean frameNotAchieved = true;
         boolean songPlayed = true;
@@ -225,10 +233,15 @@ public class MP3Player extends AdvancedPlayer
         currentFrameNumber = 0;
         pausedOnFrame = 0;
 
+        if(playlist.getSize() == 0)
+            this.currentlyOpenedFile = null;
     }
 
     private File getCurrentSong()
     {
+        if(getPlaylist().getCurrentElementIndex() == -1)
+            return null;
+
         return playlist.getCurrentElement().getFile();
     }
     /**
@@ -236,6 +249,9 @@ public class MP3Player extends AdvancedPlayer
      */
     private File getNextSong()
     {
+        if(getPlaylist().getSize() == 0)
+            return null;
+
         ///   If we are have not played recently the last song, then increment the current song index
         if(this.getPlaylist().getCurrentElementIndex() < this.getPlaylist().getSize() - 1)
             this.getPlaylist().incCurrentElementIndex();
@@ -250,6 +266,9 @@ public class MP3Player extends AdvancedPlayer
      */
     private File getPrevSong()
     {
+        if(getPlaylist().getSize() == 0)
+            return null;
+
         ///   If we are have not played recently the last song, then increment the current song index
         if(this.getPlaylist().getCurrentElementIndex() > 0)
             this.getPlaylist().decCurrentElementIndex();
@@ -266,6 +285,9 @@ public class MP3Player extends AdvancedPlayer
      */
     private File randomizeNextSong()
     {
+        if(getPlaylist().getSize() == 0)
+            return null;
+
         /// Randomize the index of the next song, accordingly to the list's size and set that index as the current
         // element index
         int random =0;
@@ -333,10 +355,11 @@ public class MP3Player extends AdvancedPlayer
                 }
                 else //if paused, just resume
                    resumeSong();
-            }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED);
+            }while(state != PlayerState.STATE_STOPPED && state != PlayerState.STATE_PAUSED && state != PlayerState.STATE_NO_FILE);
         });
         t.start();
     }
+
 
     /**
      * Stops the currently played song, and starts the next one on the playlist. If the last played song was the last
@@ -476,5 +499,15 @@ public class MP3Player extends AdvancedPlayer
     public void setPlaybackOrder(PlaybackOrder playbackOrder)
     {
         this.playbackOrder = playbackOrder;
+    }
+
+    public PlayerState getState()
+    {
+        return state;
+    }
+
+    public void setState(PlayerState state)
+    {
+        this.state = state;
     }
 }

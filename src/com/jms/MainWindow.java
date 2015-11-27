@@ -190,12 +190,12 @@ public class MainWindow extends JPanel
             playlist.removePlaylistItem(index);
         });
 
-        playlistToolbar = new JToolBar("Playlsit toolbar", JToolBar.VERTICAL);
-        playlistToolbar.add(itemUpButton);
-        playlistToolbar.add(itemDownButton);
-        playlistToolbar.add(removeItemButton);
-        playlistToolbar.setFloatable(false);
-    }
+            playlistToolbar = new JToolBar("Playlsit toolbar", JToolBar.VERTICAL);
+            playlistToolbar.add(itemUpButton);
+            playlistToolbar.add(itemDownButton);
+            playlistToolbar.add(removeItemButton);
+            playlistToolbar.setFloatable(false);
+        }
 
     /**
      * Setups playback toolbar
@@ -267,15 +267,15 @@ public class MainWindow extends JPanel
             switch (player.getPlaybackOrder())
             {
                 case PLAY_IN_ORDER:
-                    player.continuousPlay();
+                    player.executeTask();
                     break;
                 case PLAY_RANDOM:
-                    player.continuousPlay();
+                    player.executeTask();
                     break;
                 case PLAY_SINGLE:
                     player.playPlaylistItem(playlistDisplay.getSelectedIndex());
                     break;
-                case REPEAT_SINGLE:
+        case REPEAT_SINGLE:
                     player.playPlaylistItem(playlistDisplay.getSelectedIndex());
                     break;
                 default: break;
@@ -321,6 +321,11 @@ public class MainWindow extends JPanel
                     while(cnt < array.length)
                     {
                         playlist.addPlaylistItem(new PlaylistItem(array[cnt++]));
+                        if(player.getState() == MP3Player.PlayerState.STATE_NO_FILE)
+                        {
+                            playlist.incCurrentElementIndex();
+                            player.setState(MP3Player.PlayerState.STATE_STOPPED);
+                        }
                     }
 
                    // playlist.addPlaylistItem(new PlaylistItem(fc.getSelectedFile()));
