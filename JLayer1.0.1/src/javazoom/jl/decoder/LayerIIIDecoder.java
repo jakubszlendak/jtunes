@@ -39,7 +39,7 @@ package javazoom.jl.decoder;
  *
  * @since 0.0
  */
-final class LayerIIIDecoder implements FrameDecoder
+public class LayerIIIDecoder implements FrameDecoder
 {
 	final double d43 = (4.0/3.0);
 	
@@ -75,6 +75,10 @@ final class LayerIIIDecoder implements FrameDecoder
     private int 				last_channel;
     private int					sfreq;
 
+	public Header getHeader()
+	{
+		return header;
+	}
 
 	/**
 	 * Constructor.
@@ -1816,7 +1820,9 @@ final class LayerIIIDecoder implements FrameDecoder
     private int counter = 0;
 	private static final int		SSLIMIT=18;
 	private static final int		SBLIMIT=32;
-    // Size of the table of whole numbers raised to 4/3 power.
+
+
+	// Size of the table of whole numbers raised to 4/3 power.
     // This may be adjusted for performance without any problems.
     //public static final int 	POW_TABLE_LIMIT=512;
 

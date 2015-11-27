@@ -51,8 +51,9 @@ public class Decoder implements DecoderErrors
 	/**
 	 * Sythesis filter for the right channel.
 	 */
-	private SynthesisFilter			filter2;	
-			
+	private SynthesisFilter			filter2;
+
+
 	/**
 	 * The decoder used to decode layer III frames.
 	 */
@@ -100,7 +101,12 @@ public class Decoder implements DecoderErrors
 			equalizer.setFrom(eq);
 		}
 	}
-	
+
+	public LayerIIIDecoder getL3decoder()
+	{
+		return l3decoder;
+	}
+
 	static public Params getDefaultParams()
 	{
 		return (Params)DEFAULT_PARAMS.clone();

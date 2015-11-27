@@ -4,7 +4,6 @@ import javazoom.jl.decoder.*;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
-import javazoom.jl.player.advanced.PlaybackEvent;
 
 import java.io.*;
 
@@ -21,7 +20,7 @@ public class MP3Player extends AdvancedPlayer
         STATE_NO_FILE,
         STATE_NEXT_SONG_REQUESTED,
         STATE_PREV_SONG_REQUESTED
-}
+    }
     public enum RandomOrContinuous
     {
         PLAY_IN_ORDER,
@@ -93,15 +92,21 @@ public class MP3Player extends AdvancedPlayer
         }
         try
         {
-            audio.open(decoder = new Decoder());
+            decoder = new Decoder();
+            audio.open(decoder);
 
         } catch (JavaLayerException e)
         {
             e.printStackTrace();
         }
 
+
     }
 
+    public float getCurrentSongSizeMs()
+    {
+        return this.decoder.getL3decoder().getHeader().total_ms((int)this.currentlyOpenedFile.length());
+    }
 
     /**
      * It is main function which plays song. It blocks execution, so it is started in its own Thread. It decodes
@@ -120,7 +125,7 @@ public class MP3Player extends AdvancedPlayer
         currentFrameNumber = 0;
 
         openFile(songToPlay);
-
+        System.out.println(((getCurrentSongSizeMs()/1000)));
         state = PlayerState.STATE_PLAYING;
 
         boolean frameNotAchieved = true;
@@ -234,6 +239,8 @@ public class MP3Player extends AdvancedPlayer
         /// Open the next file
         return playlist.getCurrentElement().getFile();
     }
+
+
     /**
      * This function randomizes the next song which is to be played
      */
