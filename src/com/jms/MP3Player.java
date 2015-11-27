@@ -283,9 +283,15 @@ public class MP3Player extends AdvancedPlayer
     }
 
     /**
-     * This function continuously reads songs from the playlist orderly and plays it
+     * The main function which handles songs playing in different options:
+     *                  - in order from playlist
+     *                  - randomly from playlist
+     *                  - single song repeated
+     *                  - single song played only once
+     *                  - pause and resume
+     *                  - stop and start song from the beginning
      */
-    public void continuousPlay()
+    public void executeTask()
     {
         Thread t = new Thread( () ->
         {
@@ -351,7 +357,7 @@ public class MP3Player extends AdvancedPlayer
         /// Request the next song on the list
         state = PlayerState.STATE_NEXT_SONG_REQUESTED;
         /// Play the song
-        this.continuousPlay();
+        this.executeTask();
     }
     /**
      * Stops the currently played song, and starts the previous one on the playlist. If the last played song was the
@@ -373,7 +379,7 @@ public class MP3Player extends AdvancedPlayer
         /// Request the next song on the list
         state = PlayerState.STATE_PREV_SONG_REQUESTED;
         /// Play the song
-        this.continuousPlay();
+        this.executeTask();
     }
 
     public void playPlaylistItem(int playlistIndex)
@@ -389,7 +395,7 @@ public class MP3Player extends AdvancedPlayer
         }
         state = PlayerState.STATE_SONG_REQUESTED;
         playlist.setCurrentElementIndex(playlistIndex);
-        this.continuousPlay();
+        this.executeTask();
 
     }
     /**
