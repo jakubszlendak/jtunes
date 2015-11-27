@@ -294,17 +294,16 @@ public class MP3Player extends AdvancedPlayer
                 // If not paused
                 if(state != PlayerState.STATE_PAUSED)// && state != PlayerState.STATE_STOPPED)
                 {
-                    if(playbackOrder == PlaybackOrder.REPEAT_SINGLE)
+                    if(playbackOrder == PlaybackOrder.REPEAT_SINGLE || playbackOrder == PlaybackOrder.PLAY_SINGLE)
                     {
                         playSong(0, Integer.MAX_VALUE, getCurrentSong());
+                        if(playbackOrder == PlaybackOrder.PLAY_SINGLE)
+                        {
+                            if(state == PlayerState.STATE_NEXT_SONG_REQUESTED)
+                                this.stopSong();
+                        }
                     }
-                    if(playbackOrder == PlaybackOrder.PLAY_SINGLE)
-                    {
-                        playSong(0, Integer.MAX_VALUE, getCurrentSong());
-                        if(state == PlayerState.STATE_NEXT_SONG_REQUESTED)
-                            this.stopSong();
-                        return;
-                    }
+
                     if(playbackOrder == PlaybackOrder.PLAY_IN_ORDER)
                     {
                         /// If user requested particular song from playlist or the current song was stopped
