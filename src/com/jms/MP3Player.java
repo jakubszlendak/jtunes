@@ -42,7 +42,7 @@ public class MP3Player extends AdvancedPlayer
     private int                     pausedOnFrame;          /**< Number of the frame which was decoded last when pause event came**/
     private int                     requestedItemIndex;     /**< If song requested from playlist, this is the item number */
 
-    private PlayerState             state;
+    private PlayerState             state = PlayerState.STATE_NO_FILE;
     private PlaybackOrder           playbackOrder = PlaybackOrder.PLAY_IN_ORDER;
 
 
@@ -212,7 +212,16 @@ public class MP3Player extends AdvancedPlayer
     public void stopSong()
     {
         state = PlayerState.STATE_STOPPED;
+        try
+        {
+            /// Give some time for the thread responsible for song playing to shutdown
+            Thread.sleep(100);
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
         this.stop();
+
         currentFrameNumber = 0;
         pausedOnFrame = 0;
 
@@ -283,7 +292,7 @@ public class MP3Player extends AdvancedPlayer
             do
             {
                 // If not paused
-                if(state != PlayerState.STATE_PAUSED && state != PlayerState.STATE_STOPPED)
+                if(state != PlayerState.STATE_PAUSED)// && state != PlayerState.STATE_STOPPED)
                 {
                     if(playbackOrder == PlaybackOrder.REPEAT_SINGLE)
                     {
@@ -292,13 +301,14 @@ public class MP3Player extends AdvancedPlayer
                     if(playbackOrder == PlaybackOrder.PLAY_SINGLE)
                     {
                         playSong(0, Integer.MAX_VALUE, getCurrentSong());
-                        this.stopSong();
+                        if(state == PlayerState.STATE_NEXT_SONG_REQUESTED)
+                            this.stopSong();
                         return;
                     }
                     if(playbackOrder == PlaybackOrder.PLAY_IN_ORDER)
                     {
-                        /// If user requested particular song from playlist
-                        if(state == PlayerState.STATE_SONG_REQUESTED)
+                        /// If user requested particular song from playlist or the current song was stopped
+                        if(state == PlayerState.STATE_SONG_REQUESTED || state == PlayerState.STATE_STOPPED)
                             playSong(0, Integer.MAX_VALUE, getCurrentSong());
                         else if(state == PlayerState.STATE_PREV_SONG_REQUESTED) // If previous song requested
                             playSong(0, Integer.MAX_VALUE, getPrevSong());
@@ -307,8 +317,9 @@ public class MP3Player extends AdvancedPlayer
                     }
                     if(playbackOrder == PlaybackOrder.PLAY_RANDOM) //if random play enabled
                     {
-                        if(state == PlayerState.STATE_SONG_REQUESTED)
+                        if(state == PlayerState.STATE_SONG_REQUESTED || state == PlayerState.STATE_STOPPED)
                             playSong(0, Integer.MAX_VALUE, getCurrentSong());
+                        else
                         if(state == PlayerState.STATE_PREV_SONG_REQUESTED)
                             playSong(0, Integer.MAX_VALUE, randomizeNextSong());
                         else

@@ -281,7 +281,6 @@ public class MainWindow extends JPanel
                 default: break;
 
             }
-            player.continuousPlay();
         });
         pauseButton.addActionListener(e2 -> player.pauseSong());
         stopButton.addActionListener(e2 -> player.stopSong());
