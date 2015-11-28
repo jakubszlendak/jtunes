@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * Created by jakub on 15.11.15.
  */
-public class MainWindow extends JPanel
+public class MainWindow extends JPanel implements ChangedSongListener
 {
     // Icon paths
     private final static String ICON_PATH = "img/";
@@ -118,6 +118,7 @@ public class MainWindow extends JPanel
 
         // Setup player model
         this.player = player;
+        this.player.addListener(this);
         // Setup playlist model
         this.playlist = player.getPlaylist();
         playlist.addListDataListener(new ListDataListener() {
@@ -154,6 +155,12 @@ public class MainWindow extends JPanel
         });
         playlistDisplay.setModel(playlist);
 
+    }
+
+    @Override
+    public void songChanged()
+    {
+        playlistDisplay.setSelectedIndex(playlist.getCurrentElementIndex());
     }
 
     /**
@@ -275,13 +282,14 @@ public class MainWindow extends JPanel
                 case PLAY_SINGLE:
                     player.playPlaylistItem(playlistDisplay.getSelectedIndex());
                     break;
-        case REPEAT_SINGLE:
+                case REPEAT_SINGLE:
                     player.playPlaylistItem(playlistDisplay.getSelectedIndex());
                     break;
                 default: break;
 
             }
         });
+
         pauseButton.addActionListener(e2 -> player.pauseSong());
         stopButton.addActionListener(e2 -> player.stopSong());
         nextButton.addActionListener(e2 -> player.playNextSong());
@@ -308,9 +316,11 @@ public class MainWindow extends JPanel
         loadButton.addActionListener(e ->
         {
             final JFileChooser fc = new JFileChooser();
+            /// Enable multiple file choosing from jFileChooser
             fc.setMultiSelectionEnabled(true);
+            /// Enable loading only .mp3 and .wav files
             fc.setFileFilter(new FileNameExtensionFilter("MP3 and WAVE files.", "mp3", "wav", "wave"));
-
+            /// Save the last directory to start next jFileChooser from there
             fc.setCurrentDirectory(new File(this.playlist.getLastSongDir()));
             int retval = fc.showOpenDialog(this);
             if(retval == JFileChooser.APPROVE_OPTION)
@@ -326,6 +336,8 @@ public class MainWindow extends JPanel
                             playlist.incCurrentElementIndex();
                             player.setState(MP3Player.PlayerState.STATE_STOPPED);
                         }
+                        /// Select always currently played song
+                        playlistDisplay.setSelectedIndex(this.player.getPlaylist().getCurrentElementIndex());
                     }
 
                    // playlist.addPlaylistItem(new PlaylistItem(fc.getSelectedFile()));

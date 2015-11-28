@@ -6,14 +6,14 @@ import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Konrad on 2015-11-22.
  */
 public class MP3Player extends AdvancedPlayer
 {
-
-
     public enum PlayerState
     {
         STATE_STOPPED,
@@ -45,6 +45,7 @@ public class MP3Player extends AdvancedPlayer
     private PlayerState             state = PlayerState.STATE_NO_FILE;
     private PlaybackOrder           playbackOrder = PlaybackOrder.PLAY_IN_ORDER;
 
+    private List<ChangedSongListener> listener = new ArrayList<ChangedSongListener>();
 
     public MP3Player(File file) throws JavaLayerException
     {
@@ -73,6 +74,18 @@ public class MP3Player extends AdvancedPlayer
         }
 
         this.playlist = new Playlist();
+    }
+
+    public void addListener(ChangedSongListener listenerToAdd)
+    {
+        listener.add(listenerToAdd);
+    }
+
+    public void sendSongChangedEvt()
+    {
+        /// Send event
+        for(int i=0; i<listener.size(); i++)
+            listener.get(i).songChanged();
     }
 
     /**
@@ -143,6 +156,8 @@ public class MP3Player extends AdvancedPlayer
        // System.out.println(((getCurrentSongSizeMs()/1000)));
         state = PlayerState.STATE_PLAYING;
 
+        /// Inform GUI, which song is to be played
+        this.sendSongChangedEvt();
 
         boolean frameNotAchieved = true;
         boolean songPlayed = true;
