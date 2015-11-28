@@ -101,6 +101,7 @@ public class MP3Player extends AdvancedPlayer
         {
             decoder = new Decoder();
             audio.open(decoder);
+            decoder.setEqualizer(equalizer);
 
         } catch (JavaLayerException e)
         {
