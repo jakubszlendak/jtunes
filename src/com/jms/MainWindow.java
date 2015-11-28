@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * Created by jakub on 15.11.15.
  */
-public class MainWindow extends JPanel implements ChangedSongListener
+public class MainWindow extends JPanel implements playerListener
 {
     // Icon paths
     private final static String ICON_PATH = "img/";
@@ -169,10 +169,29 @@ public class MainWindow extends JPanel implements ChangedSongListener
 
     }
 
+    /**
+     * This function reacts on the event sent from player about which song is currently played
+     * It highlights the song on the playlistDisplay
+     */
     @Override
     public void songChanged()
     {
         playlistDisplay.setSelectedIndex(playlist.getCurrentElementIndex());
+    }
+
+    /**
+     * This function updates the slider position accordingly to the song current time
+     */
+    @Override
+    public void updateSongTime()
+    {
+        float timeMs = player.getCurrentSongSizeMs();
+        progressSlider.setMaximum(145000);
+        progressSlider.setValue((int)timeMs);
+        /*float timeS  = timeMs/1000;
+
+        int minutes = (int)timeS/60;
+        int seconds = (int)timeS%60;*/
     }
 
     /**

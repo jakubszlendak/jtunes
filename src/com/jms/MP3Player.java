@@ -45,7 +45,7 @@ public class MP3Player extends AdvancedPlayer
     private PlayerState             state = PlayerState.STATE_NO_FILE;
     private PlaybackOrder           playbackOrder = PlaybackOrder.PLAY_IN_ORDER;
 
-    private List<ChangedSongListener> listener = new ArrayList<ChangedSongListener>();
+    private List<playerListener> listener = new ArrayList<playerListener>();
 
     public MP3Player(File file) throws JavaLayerException
     {
@@ -76,16 +76,34 @@ public class MP3Player extends AdvancedPlayer
         this.playlist = new Playlist();
     }
 
-    public void addListener(ChangedSongListener listenerToAdd)
+    /**
+     * This function adds an listener of the player events
+     * @param listenerToAdd - object which implements an playerListener interface, which is to react on the event
+     */
+    public void addListener(playerListener listenerToAdd)
     {
         listener.add(listenerToAdd);
     }
 
+    /**
+     * This function sends an event to the GUI to inform it, which song is currently played in order to select it in
+     * playerDisplay
+     */
     public void sendSongChangedEvt()
     {
         /// Send event
         for(int i=0; i<listener.size(); i++)
             listener.get(i).songChanged();
+    }
+
+    /**
+     * This function sends an event to the GUI to update the time of the song
+     */
+    public void songTimeUpdateEvt()
+    {
+        /// Send event
+        for(int i=0; i<listener.size(); i++)
+            listener.get(i).updateSongTime();
     }
 
     /**
@@ -124,10 +142,17 @@ public class MP3Player extends AdvancedPlayer
 
     }
 
-   /* public float getCurrentSongSizeMs()
+    /**
+     * Gets the current time of the song
+     * @return the current time in miliseconds
+     */
+    public float getCurrentSongSizeMs()
     {
-        return this.decoder.getL3decoder().getHeader().total_ms((int)this.currentlyOpenedFile.length());
-    }*/
+        if(h != null)
+            return currentFrameNumber*h.ms_per_frame();
+
+        return 0;
+    }
 
     /**
      * It is main function which plays song. It blocks execution, so it is started in its own Thread. It decodes
@@ -180,6 +205,7 @@ public class MP3Player extends AdvancedPlayer
             try
             {
                 songPlayed = decodeFrame();
+                songTimeUpdateEvt();    /// Send an event to the GUI about current song time
                 currentFrameNumber++;
             } catch (JavaLayerException e)
             {
