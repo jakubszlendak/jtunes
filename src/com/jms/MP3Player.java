@@ -244,7 +244,8 @@ public class MP3Player extends AdvancedPlayer
         {
             e.printStackTrace();
         }
-        this.stop();
+        if(currentlyOpenedFile != null)
+            this.stop();
 
         currentFrameNumber = 0;
         pausedOnFrame = 0;

@@ -81,6 +81,9 @@ public class MainWindow extends JPanel implements ChangedSongListener
         setupSlider();
         setupPlaylistToolbar();
 
+        this.player = player;
+        this.player.addListener(this);
+
         // Setup main panel with card layout
         mainPanel = new JPanel(new CardLayout());
         editPanel = new JPanel();
@@ -101,13 +104,24 @@ public class MainWindow extends JPanel implements ChangedSongListener
         scrollPane.setPreferredSize(new Dimension(800, 200));
         scrollPane.setMinimumSize(new Dimension(600, 200));
 
+
         playlistDisplay.setCellRenderer(new PlaylistItemRenderer());
         playlistPanel.add(scrollPane);
         playlistPanel.add(playlistToolbar);
         playlistDisplay.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+            public void mouseClicked(MouseEvent e)
+            {
+               // super.mouseClicked(e);
+              int clickCount = e.getClickCount();
+
+                if(clickCount >= 2)
+                {
+                    /// Stop the currently played song
+                   player.playPlaylistItem(playlistDisplay.getSelectedIndex());
+
+                }
+
             }
         });
 //        playlistPanel.setMinimumSize(new Dimension(500, 100));
@@ -116,9 +130,7 @@ public class MainWindow extends JPanel implements ChangedSongListener
         mainPanel.add(playlistPanel, PLAYLIST_PANEL);
         mainPanel.add(editPanel, EDITOR_PANEL);
 
-        // Setup player model
-        this.player = player;
-        this.player.addListener(this);
+
         // Setup playlist model
         this.playlist = player.getPlaylist();
         playlist.addListDataListener(new ListDataListener() {
