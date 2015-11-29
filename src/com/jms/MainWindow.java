@@ -186,7 +186,7 @@ public class MainWindow extends JPanel implements playerListener
     public void updateSongTime()
     {
         float timeMs = player.getCurrentSongSizeMs();
-        progressSlider.setMaximum(145000);
+        progressSlider.setMaximum(233000);
         progressSlider.setValue((int)timeMs);
         /*float timeS  = timeMs/1000;
 
