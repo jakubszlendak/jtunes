@@ -553,4 +553,30 @@ public class MP3Player extends AdvancedPlayer
     {
         this.state = state;
     }
+
+    /**
+     *
+     * @param song
+     * @return
+     */
+    public int getSongTotalTimeMs(File song)
+    {
+        int frameCount = 0;
+        int timeMs = 0;
+        openFile(song);
+        try
+        {
+            while(skipFrame())
+            {
+                timeMs = (int)(frameCount*h.ms_per_frame());
+                frameCount++;
+            }
+        } catch (JavaLayerException e)
+        {
+            e.printStackTrace();
+        }
+
+
+        return timeMs;
+    }
 }

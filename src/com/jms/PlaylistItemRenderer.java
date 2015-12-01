@@ -70,8 +70,9 @@ public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<Pla
 
         if(value.getGenre() != null)
             genre.setText(value.getGenre());
-        if(value.getArtist() != null)
-            trackLength.setText(String.format("%02d:%02d", value.getDuration() / 60, value.getDuration() % 60));
+        //if(value.getArtist() != null)
+            trackLength.setText(String.format("%02d:%02d", value.getDuration()/1000/ 60, value.getDuration()/1000 %
+                    60));
         if(value.getAlbumArt() != null)
             albumArt.setIcon(new ImageIcon(getScaledImage(value.getAlbumArt().getImage(), 50, 50)));
         else albumArt.setIcon(noAlbumArtIcon);

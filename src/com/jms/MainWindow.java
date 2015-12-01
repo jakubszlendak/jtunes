@@ -1,4 +1,5 @@
 package com.jms;
+import javazoom.jl.converter.Converter;
 import org.farng.mp3.TagException;
 
 import javax.swing.*;
@@ -68,7 +69,7 @@ public class MainWindow extends JPanel implements playerListener
     // Program logic controllers
     private Playlist playlist;
     private MP3Player player;
-
+    private Converter converter;
     // Flags
     private boolean editModeEnabled = false;
 
@@ -186,12 +187,9 @@ public class MainWindow extends JPanel implements playerListener
     public void updateSongTime()
     {
         float timeMs = player.getCurrentSongSizeMs();
-        progressSlider.setMaximum(233000);
+        /// Set the total song time on the slider
+        progressSlider.setMaximum(player.getPlaylist().getCurrentElement().getDuration());
         progressSlider.setValue((int)timeMs);
-        /*float timeS  = timeMs/1000;
-
-        int minutes = (int)timeS/60;
-        int seconds = (int)timeS%60;*/
     }
 
     /**
@@ -322,7 +320,12 @@ public class MainWindow extends JPanel implements playerListener
         });
 
         pauseButton.addActionListener(e2 -> player.pauseSong());
-        stopButton.addActionListener(e2 -> player.stopSong());
+        stopButton.addActionListener(e2 ->
+                {
+                    player.stopSong();
+                    progressSlider.setValue(0);
+                }
+        );
         nextButton.addActionListener(e2 -> player.playNextSong());
         prevButton.addActionListener(e2 -> player.playPrevSong());
         orderComboBox.addActionListener(e3 -> {
@@ -361,7 +364,11 @@ public class MainWindow extends JPanel implements playerListener
                     File array[] = fc.getSelectedFiles();
                     while(cnt < array.length)
                     {
-                        playlist.addPlaylistItem(new PlaylistItem(array[cnt++]));
+                        PlaylistItem item = new PlaylistItem(array[cnt]);
+                        item.setDuration(player.getSongTotalTimeMs(item.getFile()));
+                        playlist.addPlaylistItem(item);
+
+                        cnt++;
                         if(player.getState() == MP3Player.PlayerState.STATE_NO_FILE)
                         {
                             playlist.incCurrentElementIndex();
@@ -407,5 +414,4 @@ public class MainWindow extends JPanel implements playerListener
         frame.setMinimumSize(new Dimension(frame.getWidth(), frame.getHeight()));
         frame.setVisible(true);
     }
-
 }
