@@ -11,14 +11,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Converter conv = new Converter();
-        try
-        {
-            conv.convert("01_The_Trail.mp3", "The_Trail_WAV");
-        } catch (JavaLayerException e)
-        {
-            e.printStackTrace();
-        }
+        Editor editor = new Editor();
+
+        editor.loadSong(new File("The_Trail_WAV.wav"));
 
         try
         {
