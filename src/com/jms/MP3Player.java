@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class MP3Player extends AdvancedPlayer
 {
+
+
     public enum PlayerState
     {
         STATE_STOPPED,
@@ -45,46 +47,46 @@ public class MP3Player extends AdvancedPlayer
     private PlayerState             state = PlayerState.STATE_NO_FILE;
     private PlaybackOrder           playbackOrder = PlaybackOrder.PLAY_IN_ORDER;
 
-    private List<playerListener> listener = new ArrayList<playerListener>();
+    private List<PlayerEventListener> listener = new ArrayList<PlayerEventListener>();
 
     /**
      * @param file
      * @throws JavaLayerException
      */
-    public MP3Player(File file) throws JavaLayerException
+    public MP3Player(/*File file*/) throws JavaLayerException
     {
-        this.currentlyOpenedFile = file;
-        try
-        {
-            this.stream = new FileInputStream(file);
-        } catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        this.bitstream = new Bitstream(stream);
-        try
-        {
-            audio = FactoryRegistry.systemRegistry().createAudioDevice();
-        } catch (JavaLayerException e)
-        {
-            e.printStackTrace();
-        }
-        try
-        {
-            audio.open(decoder = new Decoder());
-        } catch (JavaLayerException e)
-        {
-            e.printStackTrace();
-        }
+//        this.currentlyOpenedFile = file;
+//        try
+//        {
+//            this.stream = new FileInputStream(file);
+//        } catch (FileNotFoundException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        this.bitstream = new Bitstream(stream);
+//        try
+//        {
+//            audio = FactoryRegistry.systemRegistry().createAudioDevice();
+//        } catch (JavaLayerException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        try
+//        {
+//            audio.open(decoder = new Decoder());
+//        } catch (JavaLayerException e)
+//        {
+//            e.printStackTrace();
+//        }
 
         this.playlist = new Playlist();
     }
 
     /**
      * This function adds an listener of the player events
-     * @param listenerToAdd - object which implements an playerListener interface, which is to react on the event
+     * @param listenerToAdd - object which implements an PlayerEventListener interface, which is to react on the event
      */
-    public void addListener(playerListener listenerToAdd)
+    public void addListener(PlayerEventListener listenerToAdd)
     {
         listener.add(listenerToAdd);
     }
@@ -582,5 +584,13 @@ public class MP3Player extends AdvancedPlayer
 
 
         return timeMs;
+    }
+
+    /**
+     * Returns list of PlayerEventListeners, mainly for test purposes
+     * @return list of PlayerEventListeners registered to this instance
+     */
+    public List<PlayerEventListener> getPlayerEventListeners() {
+        return listener;
     }
 }

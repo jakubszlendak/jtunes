@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * Created by jakub on 15.11.15.
  */
-public class MainWindow extends JPanel implements playerListener
+public class MainWindow extends JPanel implements PlayerEventListener
 {
     // Icon paths
     private final static String ICON_PATH = "img/";
