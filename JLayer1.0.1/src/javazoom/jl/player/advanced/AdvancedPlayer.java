@@ -50,7 +50,7 @@ public class AdvancedPlayer
 	/** Listener for the playback process */
 	protected PlaybackListener listener;
 
-
+	public Header h;
 	public AdvancedPlayer()
 	{
 
@@ -154,8 +154,10 @@ public class AdvancedPlayer
 			AudioDevice out = audio;
 			if (out == null) return false;
 
-			Header h = bitstream.readFrame();
+			h = bitstream.readFrame();
 			if (h == null) return false;
+
+
 
 			// sample buffer set when decoder constructed
 			SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
@@ -184,7 +186,7 @@ public class AdvancedPlayer
 	 */
 	protected boolean skipFrame() throws JavaLayerException
 	{
-		Header h = bitstream.readFrame();
+		h = bitstream.readFrame();
 		if (h == null) return false;
 		bitstream.closeFrame();
 		return true;

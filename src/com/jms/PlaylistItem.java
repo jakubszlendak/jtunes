@@ -112,6 +112,8 @@ public class PlaylistItem {
         albumArt = loadAlbumArt();
     }
 
+
+
     public String getTitle() { return title; }
 
     public String getArtist() { return artist; }
@@ -153,6 +155,11 @@ public class PlaylistItem {
         if (files.length != 0)
             return new ImageIcon(files[0].getPath());
         else return null;
+    }
+
+    public void setDuration(int duration)
+    {
+        this.duration = duration;
     }
 
 

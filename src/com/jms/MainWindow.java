@@ -1,4 +1,5 @@
 package com.jms;
+import javazoom.jl.converter.Converter;
 import org.farng.mp3.TagException;
 
 import javax.swing.*;
@@ -14,7 +15,7 @@ import java.io.IOException;
 /**
  * Created by jakub on 15.11.15.
  */
-public class MainWindow extends JPanel
+public class MainWindow extends JPanel implements playerListener
 {
     // Icon paths
     private final static String ICON_PATH = "img/";
@@ -68,7 +69,7 @@ public class MainWindow extends JPanel
     // Program logic controllers
     private Playlist playlist;
     private MP3Player player;
-
+    private Converter converter;
     // Flags
     private boolean editModeEnabled = false;
 
@@ -80,6 +81,9 @@ public class MainWindow extends JPanel
         setupPlaybackButtons();
         setupSlider();
         setupPlaylistToolbar();
+
+        this.player = player;
+        this.player.addListener(this);
 
         // Setup main panel with card layout
         mainPanel = new JPanel(new CardLayout());
@@ -101,13 +105,24 @@ public class MainWindow extends JPanel
         scrollPane.setPreferredSize(new Dimension(800, 200));
         scrollPane.setMinimumSize(new Dimension(600, 200));
 
+
         playlistDisplay.setCellRenderer(new PlaylistItemRenderer());
         playlistPanel.add(scrollPane);
         playlistPanel.add(playlistToolbar);
         playlistDisplay.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+            public void mouseClicked(MouseEvent e)
+            {
+               // super.mouseClicked(e);
+              int clickCount = e.getClickCount();
+
+                if(clickCount >= 2)
+                {
+                    /// Stop the currently played song
+                   player.playPlaylistItem(playlistDisplay.getSelectedIndex());
+
+                }
+
             }
         });
 //        playlistPanel.setMinimumSize(new Dimension(500, 100));
@@ -116,8 +131,7 @@ public class MainWindow extends JPanel
         mainPanel.add(playlistPanel, PLAYLIST_PANEL);
         mainPanel.add(editPanel, EDITOR_PANEL);
 
-        // Setup player model
-        this.player = player;
+
         // Setup playlist model
         this.playlist = player.getPlaylist();
         playlist.addListDataListener(new ListDataListener() {
@@ -154,6 +168,28 @@ public class MainWindow extends JPanel
         });
         playlistDisplay.setModel(playlist);
 
+    }
+
+    /**
+     * This function reacts on the event sent from player about which song is currently played
+     * It highlights the song on the playlistDisplay
+     */
+    @Override
+    public void songChanged()
+    {
+        playlistDisplay.setSelectedIndex(playlist.getCurrentElementIndex());
+    }
+
+    /**
+     * This function updates the slider position accordingly to the song current time
+     */
+    @Override
+    public void updateSongTime()
+    {
+        float timeMs = player.getCurrentSongSizeMs();
+        /// Set the total song time on the slider
+        progressSlider.setMaximum(player.getPlaylist().getCurrentElement().getDuration());
+        progressSlider.setValue((int)timeMs);
     }
 
     /**
@@ -275,15 +311,21 @@ public class MainWindow extends JPanel
                 case PLAY_SINGLE:
                     player.playPlaylistItem(playlistDisplay.getSelectedIndex());
                     break;
-        case REPEAT_SINGLE:
+                case REPEAT_SINGLE:
                     player.playPlaylistItem(playlistDisplay.getSelectedIndex());
                     break;
                 default: break;
 
             }
         });
+
         pauseButton.addActionListener(e2 -> player.pauseSong());
-        stopButton.addActionListener(e2 -> player.stopSong());
+        stopButton.addActionListener(e2 ->
+                {
+                    player.stopSong();
+                    progressSlider.setValue(0);
+                }
+        );
         nextButton.addActionListener(e2 -> player.playNextSong());
         prevButton.addActionListener(e2 -> player.playPrevSong());
         orderComboBox.addActionListener(e3 -> {
@@ -308,9 +350,11 @@ public class MainWindow extends JPanel
         loadButton.addActionListener(e ->
         {
             final JFileChooser fc = new JFileChooser();
+            /// Enable multiple file choosing from jFileChooser
             fc.setMultiSelectionEnabled(true);
+            /// Enable loading only .mp3 and .wav files
             fc.setFileFilter(new FileNameExtensionFilter("MP3 and WAVE files.", "mp3", "wav", "wave"));
-
+            /// Save the last directory to start next jFileChooser from there
             fc.setCurrentDirectory(new File(this.playlist.getLastSongDir()));
             int retval = fc.showOpenDialog(this);
             if(retval == JFileChooser.APPROVE_OPTION)
@@ -320,12 +364,18 @@ public class MainWindow extends JPanel
                     File array[] = fc.getSelectedFiles();
                     while(cnt < array.length)
                     {
-                        playlist.addPlaylistItem(new PlaylistItem(array[cnt++]));
+                        PlaylistItem item = new PlaylistItem(array[cnt]);
+                        item.setDuration(player.getSongTotalTimeMs(item.getFile()));
+                        playlist.addPlaylistItem(item);
+
+                        cnt++;
                         if(player.getState() == MP3Player.PlayerState.STATE_NO_FILE)
                         {
                             playlist.incCurrentElementIndex();
                             player.setState(MP3Player.PlayerState.STATE_STOPPED);
                         }
+                        /// Select always currently played song
+                        playlistDisplay.setSelectedIndex(this.player.getPlaylist().getCurrentElementIndex());
                     }
 
                    // playlist.addPlaylistItem(new PlaylistItem(fc.getSelectedFile()));
@@ -364,5 +414,4 @@ public class MainWindow extends JPanel
         frame.setMinimumSize(new Dimension(frame.getWidth(), frame.getHeight()));
         frame.setVisible(true);
     }
-
 }

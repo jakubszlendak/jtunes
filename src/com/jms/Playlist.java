@@ -23,6 +23,7 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
         currentElementIndex = -1;
     }
 
+
     /**
      * Adds item at the end of playlist
      * @param item Item to add

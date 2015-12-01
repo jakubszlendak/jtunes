@@ -6,14 +6,14 @@ import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Konrad on 2015-11-22.
  */
 public class MP3Player extends AdvancedPlayer
 {
-
-
     public enum PlayerState
     {
         STATE_STOPPED,
@@ -45,6 +45,7 @@ public class MP3Player extends AdvancedPlayer
     private PlayerState             state = PlayerState.STATE_NO_FILE;
     private PlaybackOrder           playbackOrder = PlaybackOrder.PLAY_IN_ORDER;
 
+    private List<playerListener> listener = new ArrayList<playerListener>();
 
     /**
      * @param file
@@ -77,6 +78,36 @@ public class MP3Player extends AdvancedPlayer
         }
 
         this.playlist = new Playlist();
+    }
+
+    /**
+     * This function adds an listener of the player events
+     * @param listenerToAdd - object which implements an playerListener interface, which is to react on the event
+     */
+    public void addListener(playerListener listenerToAdd)
+    {
+        listener.add(listenerToAdd);
+    }
+
+    /**
+     * This function sends an event to the GUI to inform it, which song is currently played in order to select it in
+     * playerDisplay
+     */
+    public void sendSongChangedEvt()
+    {
+        /// Send event
+        for(int i=0; i<listener.size(); i++)
+            listener.get(i).songChanged();
+    }
+
+    /**
+     * This function sends an event to the GUI to update the time of the song
+     */
+    public void songTimeUpdateEvt()
+    {
+        /// Send event
+        for(int i=0; i<listener.size(); i++)
+            listener.get(i).updateSongTime();
     }
 
     /**
@@ -115,10 +146,17 @@ public class MP3Player extends AdvancedPlayer
 
     }
 
-   /* public float getCurrentSongSizeMs()
+    /**
+     * Gets the current time of the song
+     * @return the current time in miliseconds
+     */
+    public float getCurrentSongSizeMs()
     {
-        return this.decoder.getL3decoder().getHeader().total_ms((int)this.currentlyOpenedFile.length());
-    }*/
+        if(h != null)
+            return currentFrameNumber*h.ms_per_frame();
+
+        return 0;
+    }
 
     /**
      * It is main function which plays song. It blocks execution, so it is started in its own Thread. It decodes
@@ -147,6 +185,8 @@ public class MP3Player extends AdvancedPlayer
        // System.out.println(((getCurrentSongSizeMs()/1000)));
         state = PlayerState.STATE_PLAYING;
 
+        /// Inform GUI, which song is to be played
+        this.sendSongChangedEvt();
 
         boolean frameNotAchieved = true;
         boolean songPlayed = true;
@@ -169,6 +209,7 @@ public class MP3Player extends AdvancedPlayer
             try
             {
                 songPlayed = decodeFrame();
+                songTimeUpdateEvt();    /// Send an event to the GUI about current song time
                 currentFrameNumber++;
             } catch (JavaLayerException e)
             {
@@ -233,7 +274,8 @@ public class MP3Player extends AdvancedPlayer
         {
             e.printStackTrace();
         }
-        this.stop();
+        if(currentlyOpenedFile != null)
+            this.stop();
 
         currentFrameNumber = 0;
         pausedOnFrame = 0;
@@ -514,5 +556,31 @@ public class MP3Player extends AdvancedPlayer
     public void setState(PlayerState state)
     {
         this.state = state;
+    }
+
+    /**
+     *
+     * @param song
+     * @return
+     */
+    public int getSongTotalTimeMs(File song)
+    {
+        int frameCount = 0;
+        int timeMs = 0;
+        openFile(song);
+        try
+        {
+            while(skipFrame())
+            {
+                timeMs = (int)(frameCount*h.ms_per_frame());
+                frameCount++;
+            }
+        } catch (JavaLayerException e)
+        {
+            e.printStackTrace();
+        }
+
+
+        return timeMs;
     }
 }
