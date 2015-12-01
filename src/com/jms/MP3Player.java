@@ -46,6 +46,10 @@ public class MP3Player extends AdvancedPlayer
     private PlaybackOrder           playbackOrder = PlaybackOrder.PLAY_IN_ORDER;
 
 
+    /**
+     * @param file
+     * @throws JavaLayerException
+     */
     public MP3Player(File file) throws JavaLayerException
     {
         this.currentlyOpenedFile = file;
