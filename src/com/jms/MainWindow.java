@@ -189,7 +189,7 @@ public class MainWindow extends JPanel implements PlayerEventListener
         float timeMs = player.getCurrentSongSizeMs();
         /// Set the total song time on the slider
         progressSlider.setMaximum(player.getPlaylist().getCurrentElement().getDuration());
-        progressSlider.setValue((int)timeMs);
+        progressSlider.setValue((int) timeMs);
     }
 
     /**
@@ -397,7 +397,13 @@ public class MainWindow extends JPanel implements PlayerEventListener
     private void setupSlider(){
         progressSlider = new JSlider();
         progressSlider.addChangeListener(e -> {
-            //TODO: Service slider clicking
+            JSlider s = (JSlider) e.getSource();
+            if(s.getValueIsAdjusting()){
+//                player.rewindSong((int)(s.getValue()/s.getMaximum() * player.getCurrentSongSizeMs()));
+//                s.setValueIsAdjusting(false);
+
+            }
+
         });
 
     }

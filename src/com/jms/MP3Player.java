@@ -286,6 +286,16 @@ public class MP3Player extends AdvancedPlayer
             this.currentlyOpenedFile = null;
     }
 
+    void rewindSong(int milis)
+    {
+        if( h == null)
+            return;
+
+        pauseSong();
+        pausedOnFrame = (int) ((float) milis/h.ms_per_frame());
+        executeTask();
+    }
+
     private File getCurrentSong()
     {
         if(getPlaylist().getCurrentElementIndex() == -1)
