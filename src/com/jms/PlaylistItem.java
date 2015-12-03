@@ -14,6 +14,7 @@ import org.farng.mp3.MP3File;
 import org.farng.mp3.id3.ID3v1;
 import org.farng.mp3.TagException;
 import org.farng.mp3.id3.AbstractID3v2;
+import org.tritonus.share.sampled.file.TAudioFileFormat;
 
 //import org.tritonus.share.
 /**
@@ -28,6 +29,7 @@ public class PlaylistItem {
     private String genre;
     private int year;
     private int duration;
+    private int framesNumber;
     private ImageIcon albumArt;
 
     /**
@@ -58,14 +60,14 @@ public class PlaylistItem {
         AudioFileFormat fileFormat = null;
         try {
             fileFormat = AudioSystem.getAudioFileFormat(file);
-          /*  if(fileFormat instanceof TAudioFileFormat)
+            if(fileFormat instanceof TAudioFileFormat)
             {
                 Map<?, ?> properties = ((TAudioFileFormat) fileFormat).properties();
                 String key = "duration";
                 long microseconds = (Long) properties.get(key);
                 int miliseconds = (int)(microseconds/1000);
-                duration = miliseconds/1000;;
-            }*/
+                duration = miliseconds/1000;
+            }
         } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
         }
@@ -78,11 +80,11 @@ public class PlaylistItem {
             title = tag.getTitle();
             artist =tag.getArtist();
             album = tag.getAlbum();
-            genre = tag.getSongGenre();
-            year = Integer.parseInt(tag.getYear());
+//            genre = tag.getSongGenre();
+//            year = Integer.parseInt(tag.getYear());
 //            duration = tag.get
         }
-        else if(mp3File.hasID3v2Tag())
+        if(mp3File.hasID3v2Tag())
         {
             AbstractID3v2 tag = mp3File.getID3v2Tag();
             title = tag.getSongTitle();
@@ -162,6 +164,13 @@ public class PlaylistItem {
         this.duration = duration;
     }
 
+    public int getFramesNumber()
+    {
+        return framesNumber;
+    }
 
-
+    public void setFramesNumber(int framesNumber)
+    {
+        this.framesNumber = framesNumber;
+    }
 }

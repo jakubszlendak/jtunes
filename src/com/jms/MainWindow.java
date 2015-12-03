@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * Created by jakub on 15.11.15.
  */
-public class MainWindow extends JPanel implements playerListener
+public class MainWindow extends JPanel implements PlayerEventListener
 {
     // Icon paths
     private final static String ICON_PATH = "img/";
@@ -186,10 +186,9 @@ public class MainWindow extends JPanel implements playerListener
     @Override
     public void updateSongTime()
     {
-        float timeMs = player.getCurrentSongSizeMs();
         /// Set the total song time on the slider
-        progressSlider.setMaximum(player.getPlaylist().getCurrentElement().getDuration());
-        progressSlider.setValue((int)timeMs);
+        progressSlider.setMaximum(player.getPlaylist().getCurrentElement().getDuration());//getFramesNumber());
+        progressSlider.setValue((int)player.getCurrentSongSizeMs());//getCurrentFrameNumber());
     }
 
     /**
@@ -366,6 +365,7 @@ public class MainWindow extends JPanel implements playerListener
                     {
                         PlaylistItem item = new PlaylistItem(array[cnt]);
                         item.setDuration(player.getSongTotalTimeMs(item.getFile()));
+                        item.setFramesNumber(player.getSongTotalFrames(item.getFile()));
                         playlist.addPlaylistItem(item);
 
                         cnt++;
@@ -397,7 +397,13 @@ public class MainWindow extends JPanel implements playerListener
     private void setupSlider(){
         progressSlider = new JSlider();
         progressSlider.addChangeListener(e -> {
-            //TODO: Service slider clicking
+            JSlider s = (JSlider) e.getSource();
+            if(s.getValueIsAdjusting()){
+                player.rewindSong((int)(s.getValue()));//s.getMaximum() * player.getCurrentSongSizeMs()));
+//                s.setValueIsAdjusting(false);
+
+            }
+
         });
 
     }

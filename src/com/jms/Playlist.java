@@ -18,7 +18,7 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
 
 
 
-    Playlist(){
+    public Playlist(){
         playlist = new LinkedList<>();
         currentElementIndex = -1;
     }
@@ -41,7 +41,11 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
      */
     public boolean addPlaylistItem(PlaylistItem item, int index)
     {
-        if(index >= 0 && index < playlist.size()){
+        if(index == 0)
+        {
+            playlist.add(index, item);
+        }
+        if(index > 0 && index < playlist.size()){
             playlist.add(index, item);
             fireIntervalAdded(item, index, index);
             return true;

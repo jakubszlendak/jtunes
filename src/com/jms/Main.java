@@ -17,7 +17,7 @@ public class Main {
 
         try
         {
-            MP3Player mp3Player = new MP3Player(new File("01_The_Trail.mp3"));
+            MP3Player mp3Player = new MP3Player(/*new File("01_The_Trail.mp3")*/);
           //  mp3Player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("01_The_Trail.mp3")));
             //mp3Player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("35 Hunt Or Be Hunted.mp3")));
             //mp3Player.continuousOrderPlay();
