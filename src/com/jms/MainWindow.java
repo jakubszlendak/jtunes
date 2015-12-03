@@ -186,10 +186,9 @@ public class MainWindow extends JPanel implements PlayerEventListener
     @Override
     public void updateSongTime()
     {
-        float timeMs = player.getCurrentSongSizeMs();
         /// Set the total song time on the slider
-        progressSlider.setMaximum(player.getPlaylist().getCurrentElement().getDuration());
-        progressSlider.setValue((int) timeMs);
+        progressSlider.setMaximum(player.getPlaylist().getCurrentElement().getDuration());//getFramesNumber());
+        progressSlider.setValue((int)player.getCurrentSongSizeMs());//getCurrentFrameNumber());
     }
 
     /**
@@ -366,6 +365,7 @@ public class MainWindow extends JPanel implements PlayerEventListener
                     {
                         PlaylistItem item = new PlaylistItem(array[cnt]);
                         item.setDuration(player.getSongTotalTimeMs(item.getFile()));
+                        item.setFramesNumber(player.getSongTotalFrames(item.getFile()));
                         playlist.addPlaylistItem(item);
 
                         cnt++;
@@ -399,7 +399,7 @@ public class MainWindow extends JPanel implements PlayerEventListener
         progressSlider.addChangeListener(e -> {
             JSlider s = (JSlider) e.getSource();
             if(s.getValueIsAdjusting()){
-//                player.rewindSong((int)(s.getValue()/s.getMaximum() * player.getCurrentSongSizeMs()));
+                player.rewindSong((int)(s.getValue()));//s.getMaximum() * player.getCurrentSongSizeMs()));
 //                s.setValueIsAdjusting(false);
 
             }

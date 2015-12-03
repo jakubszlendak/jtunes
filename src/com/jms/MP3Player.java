@@ -288,7 +288,7 @@ public class MP3Player extends AdvancedPlayer
 
     void rewindSong(int milis)
     {
-        if( h == null)
+        if( h == null || state == PlayerState.STATE_STOPPED)
             return;
 
         pauseSong();
@@ -594,6 +594,30 @@ public class MP3Player extends AdvancedPlayer
 
 
         return timeMs;
+    }
+
+    public int getSongTotalFrames(File song)
+    {
+        int frameCount = 0;
+        openFile(song);
+        try
+        {
+            while(skipFrame())
+            {
+                frameCount++;
+            }
+        } catch (JavaLayerException e)
+        {
+            e.printStackTrace();
+        }
+
+
+        return frameCount;
+    }
+
+    public int getCurrentFrameNumber()
+    {
+        return currentFrameNumber;
     }
 
     /**
