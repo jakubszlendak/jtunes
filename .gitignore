@@ -2,6 +2,8 @@
 *.iml
 .idea/
 out/
+doc/tex/*.log
+doc/tex/*.backup
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
