@@ -14,7 +14,8 @@ public class Main {
         Editor editor = new Editor();
 
         editor.loadSong(new File("The_Trail_WAV.wav"));
-
+        editor.cutSong(5, 8);
+        editor.saveSong("C:/Users/Konrad/Desktop/cutSong.wav");
         try
         {
             MP3Player mp3Player = new MP3Player(/*new File("01_The_Trail.mp3")*/);
