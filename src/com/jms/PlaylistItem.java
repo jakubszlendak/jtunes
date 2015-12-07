@@ -29,6 +29,7 @@ public class PlaylistItem {
     private String genre;
     private int year;
     private int duration;
+    private int framesNumber;
     private ImageIcon albumArt;
 
     /**
@@ -163,6 +164,13 @@ public class PlaylistItem {
         this.duration = duration;
     }
 
+    public int getFramesNumber()
+    {
+        return framesNumber;
+    }
 
-
+    public void setFramesNumber(int framesNumber)
+    {
+        this.framesNumber = framesNumber;
+    }
 }

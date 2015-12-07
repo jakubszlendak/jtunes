@@ -11,15 +11,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Converter conv = new Converter();
-        try
-        {
-            conv.convert("01_The_Trail.mp3", "The_Trail_WAV");
-        } catch (JavaLayerException e)
-        {
-            e.printStackTrace();
-        }
+        Editor editor = new Editor();
 
+        editor.loadSong(new File("The_Trail_WAV.wav"));
+        //editor.cutSong(5, 8);
+        editor.changeVolume(0.7);
+        editor.saveSong("C:/Users/Konrad/Desktop/cutSong.wav");
         try
         {
             MP3Player mp3Player = new MP3Player(/*new File("01_The_Trail.mp3")*/);
