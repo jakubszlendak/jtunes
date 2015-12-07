@@ -146,7 +146,9 @@ class WavTagReader
         return i;
     }
 
-
+    /**
+     * This function reads entire .WAV file header to retrieve important information and get the first sample index
+     */
     public void readHeader()
     {
         readChunkID(0);
@@ -165,6 +167,70 @@ class WavTagReader
         readSubchunk2Size(subchunk2Index + 4);
     }
 
+    public int getChunkID()
+    {
+        return chunkID;
+    }
+
+    public int getChunkSize()
+    {
+        return chunkSize;
+    }
+
+    public int getWavFormat()
+    {
+        return wavFormat;
+    }
+
+    public int getSubchunk1ID()
+    {
+        return subchunk1ID;
+    }
+
+    public int getSubchunk1Size()
+    {
+        return subchunk1Size;
+    }
+
+    public short getAudioFormat()
+    {
+        return audioFormat;
+    }
+
+    public short getNumOfChannels()
+    {
+        return numOfChannels;
+    }
+
+    public int getSampleRate()
+    {
+        return sampleRate;
+    }
+
+    public int getByteRate()
+    {
+        return byteRate;
+    }
+
+    public short getBlockAlign()
+    {
+        return blockAlign;
+    }
+
+    public short getBitsPerSample()
+    {
+        return bitsPerSample;
+    }
+
+    public int getSubchunk2ID()
+    {
+        return subchunk2ID;
+    }
+
+    public int getSubchunk2Size()
+    {
+        return subchunk2Size;
+    }
 }
 
 public class Editor
@@ -180,6 +246,12 @@ public class Editor
     {
 
     }
+
+    /**
+     * This function converts .mp3 song to .WAV song
+     * @param filepathToConvert - the source file path (mp3)
+     * @param convertedFilepath - the destination file path (wave)
+     */
     public void convertMP3ToWav(String filepathToConvert, String convertedFilepath)
     {
         try
@@ -190,6 +262,11 @@ public class Editor
             e.printStackTrace();
         }
     }
+
+    /**
+     * This function loads the .WAV song which is to be edited into the RAM memory
+     * @param fileToOpen - the file to be edited.
+     */
     public void loadSong(File fileToOpen)
     {
         file = fileToOpen;
@@ -213,6 +290,10 @@ public class Editor
         }
     }
 
+    /**
+     * This function saves on the hard disk the edited .WAV
+     * @param filePath - the path to the directory, where the song is to be saved and the song name
+     */
     public void saveSong(String filePath)
     {
         FileOutputStream outputStream = null;
@@ -231,6 +312,11 @@ public class Editor
 
     }
 
+    /**
+     * This function is responsible for cutting the currently edited .WAV song.
+     * @param startSecond - the start time from which the song is cutted
+     * @param endSecond - the end time to which the song is cutted
+     */
     public void cutSong(int startSecond, int endSecond)
     {
         int startIndex = wavTagReader.getFirstSampleIndex() + startSecond*wavTagReader.sampleRate*wavTagReader.numOfChannels*wavTagReader
@@ -241,6 +327,11 @@ public class Editor
             rawData[i] = 0;
     }
 
+    /**
+     * This function goes through all samples of the .WAV song and multiplies the values by the given gainFactor in
+     * order to achieve the volume changing
+     * @param gainFactor - the value which is multiplied with the sample value to get new sample value
+     */
     public void changeVolume(double gainFactor)
     {
         int sample = 0;
@@ -251,5 +342,10 @@ public class Editor
             rawData[i] = (byte)(sample & 0xFF);
             rawData[i+1] = (byte)((sample >>> 8) & 0xFF);
         }
+    }
+
+    public WavTagReader getWavTagReader()
+    {
+        return wavTagReader;
     }
 }

@@ -286,6 +286,10 @@ public class MP3Player extends AdvancedPlayer
             this.currentlyOpenedFile = null;
     }
 
+    /**
+     * This funtion rewinds (pauses and plays the song from different moment) the song.
+     * @param milis - the milisecond, from which the second is to be played
+     */
     void rewindSong(int milis)
     {
         if( h == null || state == PlayerState.STATE_STOPPED)
@@ -296,6 +300,10 @@ public class MP3Player extends AdvancedPlayer
         executeTask();
     }
 
+    /**
+     * This is the getter function for returning the File
+     * @return File which is currently opened
+     */
     private File getCurrentSong()
     {
         if(getPlaylist().getCurrentElementIndex() == -1)
@@ -464,6 +472,11 @@ public class MP3Player extends AdvancedPlayer
         this.executeTask();
     }
 
+    /**
+     * This function is responsible for playing the chosen song from the playlist. It stops currently played song and
+     * switches to the song with given playlist index
+     * @param playlistIndex - the index of the song to be played on the playlist
+     */
     public void playPlaylistItem(int playlistIndex)
     {
         this.stopSong();
@@ -560,11 +573,19 @@ public class MP3Player extends AdvancedPlayer
         this.playbackOrder = playbackOrder;
     }
 
+    /**
+     * This function is getter for the current state of the Player
+     * @return state
+     */
     public PlayerState getState()
     {
         return state;
     }
 
+    /**
+     * This is setter for the player state (deprecated)
+     * @param state
+     */
     public void setState(PlayerState state)
     {
         this.state = state;
@@ -596,6 +617,12 @@ public class MP3Player extends AdvancedPlayer
         return timeMs;
     }
 
+    /**
+     * This function goes through entire song and counts the number of mp3 frames in it. It is useful for calculating
+     * the song total duration
+     * @param song - the song to check
+     * @return number of frames
+     */
     public int getSongTotalFrames(File song)
     {
         int frameCount = 0;
@@ -615,6 +642,12 @@ public class MP3Player extends AdvancedPlayer
         return frameCount;
     }
 
+    /**
+     * This is the getter for the current frame number. It is useful to calculate which second of the song is currently
+     * played bythe player
+     *
+     * @return the currently played frame number
+     */
     public int getCurrentFrameNumber()
     {
         return currentFrameNumber;
