@@ -5,6 +5,7 @@ import javazoom.jl.decoder.JavaLayerException;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
 /**
@@ -218,20 +219,6 @@ public class Editor
         try
         {
             outputStream = new FileOutputStream(filePath);
-           /* outputStream.write(wavTagReader.chunkID);
-            outputStream.write(wavTagReader.chunkSize);
-            outputStream.write(wavTagReader.wavFormat);
-            outputStream.write(wavTagReader.subchunk1ID);
-            outputStream.write(wavTagReader.subchunk1Size);
-            outputStream.w
-            outputStream.write(wavTagReader.audioFormat);
-            outputStream.write(wavTagReader.numOfChannels);
-            outputStream.write(wavTagReader.sampleRate);
-            outputStream.write(wavTagReader.byteRate);
-            outputStream.write(wavTagReader.blockAlign);
-            outputStream.write(wavTagReader.bitsPerSample);
-            outputStream.write(wavTagReader.subchunk2ID);
-            outputStream.write(wavTagReader.subchunk2Size);*/
             outputStream.write(this.rawData);
             outputStream.close();
         } catch (FileNotFoundException e)
@@ -254,9 +241,15 @@ public class Editor
             rawData[i] = 0;
     }
 
-    public void changeVolume(int gainFactor)
+    public void changeVolume(double gainFactor)
     {
-
+        int sample = 0;
+        for(int i=wavTagReader.getFirstSampleIndex(); i<rawData.length; i=i+2)
+        {
+            sample = (short)rawData[i] +  (short)((rawData[i+1] << 8) & 0xFF00);
+            sample *= gainFactor;
+            rawData[i] = (byte)(sample & 0xFF);
+            rawData[i+1] = (byte)((sample >>> 8) & 0xFF);
+        }
     }
-
 }
