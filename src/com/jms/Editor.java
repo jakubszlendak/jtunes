@@ -182,6 +182,12 @@ public class Editor
     {
 
     }
+
+    /**
+     * This function converts .mp3 song to .WAV song
+     * @param filepathToConvert - the source file path (mp3)
+     * @param convertedFilepath - the destination file path (wave)
+     */
     public void convertMP3ToWav(String filepathToConvert, String convertedFilepath)
     {
         try
