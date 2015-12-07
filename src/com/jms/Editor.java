@@ -167,6 +167,70 @@ class WavTagReader
         readSubchunk2Size(subchunk2Index + 4);
     }
 
+    public int getChunkID()
+    {
+        return chunkID;
+    }
+
+    public int getChunkSize()
+    {
+        return chunkSize;
+    }
+
+    public int getWavFormat()
+    {
+        return wavFormat;
+    }
+
+    public int getSubchunk1ID()
+    {
+        return subchunk1ID;
+    }
+
+    public int getSubchunk1Size()
+    {
+        return subchunk1Size;
+    }
+
+    public short getAudioFormat()
+    {
+        return audioFormat;
+    }
+
+    public short getNumOfChannels()
+    {
+        return numOfChannels;
+    }
+
+    public int getSampleRate()
+    {
+        return sampleRate;
+    }
+
+    public int getByteRate()
+    {
+        return byteRate;
+    }
+
+    public short getBlockAlign()
+    {
+        return blockAlign;
+    }
+
+    public short getBitsPerSample()
+    {
+        return bitsPerSample;
+    }
+
+    public int getSubchunk2ID()
+    {
+        return subchunk2ID;
+    }
+
+    public int getSubchunk2Size()
+    {
+        return subchunk2Size;
+    }
 }
 
 public class Editor
@@ -278,5 +342,10 @@ public class Editor
             rawData[i] = (byte)(sample & 0xFF);
             rawData[i+1] = (byte)((sample >>> 8) & 0xFF);
         }
+    }
+
+    public WavTagReader getWavTagReader()
+    {
+        return wavTagReader;
     }
 }
