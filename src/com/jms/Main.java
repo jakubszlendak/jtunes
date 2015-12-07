@@ -23,7 +23,7 @@ public class Main {
           //  mp3Player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("01_The_Trail.mp3")));
             //mp3Player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("35 Hunt Or Be Hunted.mp3")));
             //mp3Player.continuousOrderPlay();
-            Runnable task = () -> MainWindow.makeGUI(mp3Player);
+            Runnable task = () -> MainWindow.makeGUI(mp3Player, editor);
             javax.swing.SwingUtilities.invokeLater(task);
 
         } catch (JavaLayerException e)
