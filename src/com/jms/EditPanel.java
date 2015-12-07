@@ -13,6 +13,7 @@ public class EditPanel extends JPanel {
 
     private JTextField editFilename;
     private JTextField editFileLength;
+    private JTextArea console;
 //    private JTextField
 
     private JSlider sliderVolume;
@@ -21,21 +22,27 @@ public class EditPanel extends JPanel {
     private JButton buttonOpen;
     private JButton buttonSave;
 
+    private StringBuffer log;
 
 
     private Editor editor;
     public EditPanel(Editor editor)
     {
         this.editor = editor;
+        log = new StringBuffer();
         editCutStartTime = new JTextField();
         editCutEndTime = new JTextField();
         buttonCut = new JButton("Cut song");
+        buttonCut.setEnabled(false);
         buttonVolume = new JButton("Change volume");
+        buttonVolume.setEnabled(false);
         buttonSave = new JButton("Save file");
         buttonOpen = new JButton("Open file");
         sliderVolume = new JSlider(JSlider.HORIZONTAL);
         sliderVolume.setMaximum(100);
         sliderVolume.setMinimum(0);
+
+        console = new JTextArea();
 
         JPanel filePanel = new JPanel(new GridLayout(3,1,20,20));
         filePanel.add(new JLabel("File manipulation"));
@@ -59,10 +66,19 @@ public class EditPanel extends JPanel {
         Dimension size = new Dimension(100, 100);
         sep.setMinimumSize(size);
 
-        this.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 50));
-        this.add(filePanel);
-        this.add(cutEditPanel);
-        this.add(volumePanel);
+        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 50));
+        mainPanel.add(filePanel);
+        mainPanel.add(cutEditPanel);
+        mainPanel.add(volumePanel);
+
+        JPanel p = new JPanel();
+        p.setLayout(new GridLayout(2,1));
+        p.add(mainPanel);
+        p.add(console);
+        this.setLayout(new FlowLayout());
+        this.add(p);
+
+        //Setup action listeners
 
         buttonOpen.addActionListener(e1 -> {
             JFileChooser fc = new JFileChooser();
@@ -70,15 +86,23 @@ public class EditPanel extends JPanel {
             if (retval == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 editor.loadSong(file);
+                buttonCut.setEnabled(true);
+                buttonVolume.setEnabled(true);
+                log.append("Loaded file: " + file.getAbsolutePath() + "\n");
+                console.setText(log.toString());
             }
         });
 
         buttonSave.addActionListener(e1 -> {
             JFileChooser fc = new JFileChooser();
-            int retval = fc.showOpenDialog(this);
+            int retval = fc.showSaveDialog(this);
             if (retval == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 editor.saveSong(file.getAbsolutePath());
+                buttonCut.setEnabled(false);
+                buttonVolume.setEnabled(false);
+                log.append("Saved file: "+ file.getAbsolutePath() + "\n");
+                console.setText(log.toString());
             }
         });
 
@@ -88,15 +112,23 @@ public class EditPanel extends JPanel {
                 start = Integer.parseInt(editCutStartTime.getText());
                 end = Integer.parseInt(editCutEndTime.getText());
                 editor.cutSong(start, end);
+                log.append(String.format("Song cut. Start: %d, end: %d \n", start, end));
+                console.setText(log.toString());
             } catch (NumberFormatException ex) {
-                editCutEndTime.setText("Please enter valid number");
-                editCutStartTime.setText("Please enter valid number");
+                editCutEndTime.setText("Invalid number");
+                editCutStartTime.setText("Invalid number");
+                log.append("Please enter valid time\n");
+                console.setText(log.toString());
             }
         });
 
         buttonVolume.addActionListener(e -> {
             double factor = sliderVolume.getValue()/sliderVolume.getMaximum();
             editor.changeVolume(factor);
+            log.append("Volume changed to ");
+            log.append(sliderVolume.getValue());
+            log.append("% of input volume.\n");
+            console.setText(log.toString());
         });
 
 
