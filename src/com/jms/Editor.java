@@ -146,7 +146,9 @@ class WavTagReader
         return i;
     }
 
-
+    /**
+     * This function reads entire .WAV file header to retrieve important information and get the first sample index
+     */
     public void readHeader()
     {
         readChunkID(0);
@@ -190,6 +192,11 @@ public class Editor
             e.printStackTrace();
         }
     }
+
+    /**
+     * This function loads the .WAV song which is to be edited into the RAM memory
+     * @param fileToOpen - the file to be edited.
+     */
     public void loadSong(File fileToOpen)
     {
         file = fileToOpen;
@@ -213,6 +220,10 @@ public class Editor
         }
     }
 
+    /**
+     * This function saves on the hard disk the edited .WAV
+     * @param filePath - the path to the directory, where the song is to be saved and the song name
+     */
     public void saveSong(String filePath)
     {
         FileOutputStream outputStream = null;
@@ -231,6 +242,11 @@ public class Editor
 
     }
 
+    /**
+     * This function is responsible for cutting the currently edited .WAV song.
+     * @param startSecond - the start time from which the song is cutted
+     * @param endSecond - the end time to which the song is cutted
+     */
     public void cutSong(int startSecond, int endSecond)
     {
         int startIndex = wavTagReader.getFirstSampleIndex() + startSecond*wavTagReader.sampleRate*wavTagReader.numOfChannels*wavTagReader
@@ -241,6 +257,11 @@ public class Editor
             rawData[i] = 0;
     }
 
+    /**
+     * This function goes through all samples of the .WAV song and multiplies the values by the given gainFactor in
+     * order to achieve the volume changing
+     * @param gainFactor - the value which is multiplied with the sample value to get new sample value
+     */
     public void changeVolume(double gainFactor)
     {
         int sample = 0;
