@@ -26,6 +26,7 @@ class WavTagReader
     public short bitsPerSample;
     public int subchunk2ID;
     public int subchunk2Size;
+    private int dataChunkStartIndex;
     private int firstSampleIndex;
 
 
