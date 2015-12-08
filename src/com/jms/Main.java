@@ -12,10 +12,10 @@ public class Main {
     public static void main(String[] args) {
 
         Editor editor = new Editor();
-
-        editor.loadSong(new File("The_Trail_WAV.wav"));
-        //editor.cutSong(5, 8);
-        editor.changeVolume(0.7);
+        editor.convertMP3ToWav("Hard_Row.mp3", "Hard_Row.wav");
+        editor.loadSong(new File("Hard_Row.wav"));
+        editor.cutSong(5, 8);
+        //editor.changeVolume(0.7);
         editor.saveSong("C:/Users/Konrad/Desktop/cutSong.wav");
         try
         {
