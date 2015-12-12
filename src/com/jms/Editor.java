@@ -244,7 +244,7 @@ public class Editor
 
     public Editor()
     {
-
+        converter = new Converter();
     }
 
     /**

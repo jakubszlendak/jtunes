@@ -1,6 +1,7 @@
 package com.jms;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 
@@ -72,7 +73,7 @@ public class EditPanel extends JPanel {
         mainPanel.add(volumePanel);
 
         JPanel p = new JPanel();
-        p.setLayout(new GridLayout(2,1));
+        p.setLayout(new GridLayout(2, 1));
         p.add(mainPanel);
         p.add(console);
         this.setLayout(new FlowLayout());
@@ -83,9 +84,18 @@ public class EditPanel extends JPanel {
         buttonOpen.addActionListener(e1 -> {
             JFileChooser fc = new JFileChooser();
             int retval = fc.showOpenDialog(this);
+            fc.setFileFilter(new FileNameExtensionFilter("MP3 and WAVE files.", "mp3", "wav", "wave"));
             if (retval == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-                editor.loadSong(file);
+
+                if (file.getName().endsWith("mp3")) {
+                    editor.convertMP3ToWav(file.getAbsolutePath(), "temp.wav");
+                    editor.loadSong(new File("temp.wav"));
+                    log.append("File converted from MP3 to WAVE format.");
+                    console.setText(log.toString());
+                }
+                else
+                    editor.loadSong(file);
                 buttonCut.setEnabled(true);
                 buttonVolume.setEnabled(true);
                 log.append("Loaded file: " + file.getAbsolutePath() + "\n");
@@ -99,9 +109,12 @@ public class EditPanel extends JPanel {
             if (retval == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 editor.saveSong(file.getAbsolutePath());
+                File temp = new File("temp.wav");
+                if(temp.exists())
+                    temp.delete();
                 buttonCut.setEnabled(false);
                 buttonVolume.setEnabled(false);
-                log.append("Saved file: "+ file.getAbsolutePath() + "\n");
+                log.append("Saved file: " + file.getAbsolutePath() + "\n");
                 console.setText(log.toString());
             }
         });

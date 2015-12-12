@@ -396,15 +396,15 @@ public class MainWindow extends JPanel implements PlayerEventListener
      */
     private void setupSlider(){
         progressSlider = new JSlider();
-        progressSlider.addChangeListener(e -> {
-            JSlider s = (JSlider) e.getSource();
-            if(s.getValueIsAdjusting()){
-                player.rewindSong((int)(s.getValue()));//s.getMaximum() * player.getCurrentSongSizeMs()));
-//                s.setValueIsAdjusting(false);
-
-            }
-
-        });
+//        progressSlider.addChangeListener(e -> {
+//            JSlider s = (JSlider) e.getSource();
+//            if(s.getValueIsAdjusting()){
+//                player.rewindSong((int)(s.getValue()));//s.getMaximum() * player.getCurrentSongSizeMs()));
+////                s.setValueIsAdjusting(false);
+//
+//            }
+//
+//        });
 
     }
 
