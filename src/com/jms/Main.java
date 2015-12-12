@@ -18,11 +18,12 @@ public class Main {
             editor.convertMP3ToWav("35 Hunt Or Be Hunted.mp3", "35 Hunt Or Be Hunted.wav");
             editor.loadSong(new File("35 Hunt Or Be Hunted.wav"));
             /// Pobierz referencje do tablicy z wycietym fragmentem piosenki
-            byte editedSong[] = editor.cutSong(5, 8);
-            //editor.changeVolume(0.7);
+            //rawData= editor.cutSong(5, 8);
+            editor.changeVolume(0.5);
+            editor.muteSong(10, 12);
             /// Zapisz wyciety fragment
-            editor.saveSong("C:/Users/Konrad/Desktop/cutSong.wav", editedSong);
-
+            editor.saveSong("C:/Users/Konrad/Desktop/cutSong.wav", editor.rawData);
+            editor.convertWavToMP3("C:/Users/Konrad/Desktop/cutSong.wav", "C:/Users/Konrad/Desktop/cutSong.mp3");
 
 
             MP3Player mp3Player = new MP3Player();

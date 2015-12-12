@@ -1,9 +1,6 @@
 package com.jms;
 
-import it.sauronsoftware.jave.AudioAttributes;
-import it.sauronsoftware.jave.Encoder;
-import it.sauronsoftware.jave.EncoderException;
-import it.sauronsoftware.jave.EncodingAttributes;
+import it.sauronsoftware.jave.*;
 import javazoom.jl.converter.Converter;
 import javazoom.jl.decoder.JavaLayerException;
 
@@ -266,6 +263,77 @@ public class Editor
         } catch (JavaLayerException e)
         {
             e.printStackTrace();
+        }
+    }
+
+    public void convertWavToMP3(String filepathToConvert, String convertedFilePath)
+    {
+        Encoder wavToMp3Converter = new Encoder();
+        EncodingAttributes att = new EncodingAttributes();
+        AudioAttributes audioAtt = new AudioAttributes();
+        String codecs[] = null;
+        String formats[] = null;
+        try
+        {
+            formats = wavToMp3Converter.getSupportedDecodingFormats();
+        } catch (EncoderException e)
+        {
+            e.printStackTrace();
+        }
+        try
+        {
+            codecs = wavToMp3Converter.getAudioEncoders();
+        } catch (EncoderException e)
+        {
+            e.printStackTrace();
+        }
+        int mp3CodecIndex = -1;
+        /*for(int i=codecs.length; i>0; i--)
+        {
+            if(codecs[i].compareTo("") == 0)
+            {
+                mp3CodecIndex = i;
+                break;
+            }
+        }*/
+        audioAtt.setVolume(255);
+        audioAtt.setSamplingRate(new Integer(this.getWavTagReader().sampleRate));
+        audioAtt.setChannels(new Integer(wavTagReader.numOfChannels));
+        audioAtt.setBitRate(new Integer(this.wavTagReader.sampleRate*this.wavTagReader.bitsPerSample*this
+                .wavTagReader.numOfChannels));
+        audioAtt.setCodec("libmp3lame");
+        att.setAudioAttributes(audioAtt);
+        att.setFormat("mp3");
+        att.setOffset(new Float((float)0));
+        att.setVideoAttributes(null);
+        //att.setDuration(new Float((float)100));
+        try
+        {
+            wavToMp3Converter.encode(new File(filepathToConvert), new File(convertedFilePath), att, new EncoderProgressListener()
+            {
+                @Override
+                public void sourceInfo(MultimediaInfo multimediaInfo)
+                {
+
+                }
+
+                @Override
+                public void progress(int i)
+                {
+
+                }
+
+                @Override
+                public void message(String s)
+                {
+
+                }
+            });
+        } catch (EncoderException e)
+        {
+            e.getMessage();
+
+            e.getCause();
         }
     }
 
