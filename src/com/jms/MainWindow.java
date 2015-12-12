@@ -102,8 +102,8 @@ public class MainWindow extends JPanel implements PlayerEventListener
         // Setup playlist display list
         playlistDisplay = new JList();
         JScrollPane scrollPane = new JScrollPane(playlistDisplay);
-        scrollPane.setPreferredSize(new Dimension(800, 400));
-        scrollPane.setMinimumSize(new Dimension(600, 400));
+        scrollPane.setPreferredSize(new Dimension(1200, 600));
+        scrollPane.setMinimumSize(new Dimension(1200, 600));
 
 
         playlistDisplay.setCellRenderer(new PlaylistItemRenderer());
