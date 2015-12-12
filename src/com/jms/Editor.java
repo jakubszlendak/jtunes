@@ -335,7 +335,7 @@ public class Editor
     public void changeVolume(double gainFactor)
     {
         int sample = 0;
-        for(int i=wavTagReader.getFirstSampleIndex(); i<rawData.length; i=i+2)
+        for(int i=wavTagReader.getFirstSampleIndex(); i<rawData.length-2; i=i+2)
         {
             sample = (short)rawData[i] +  (short)((rawData[i+1] << 8) & 0xFF00);
             sample *= gainFactor;

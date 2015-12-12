@@ -1,6 +1,7 @@
 package com.jms;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 
@@ -41,6 +42,7 @@ public class EditPanel extends JPanel {
         sliderVolume = new JSlider(JSlider.HORIZONTAL);
         sliderVolume.setMaximum(100);
         sliderVolume.setMinimum(0);
+        sliderVolume.setValue(0);
 
         console = new JTextArea();
 
@@ -82,10 +84,11 @@ public class EditPanel extends JPanel {
 
         buttonOpen.addActionListener(e1 -> {
             JFileChooser fc = new JFileChooser();
+            fc.setFileFilter(new FileNameExtensionFilter("MP3 and WAVE files.", "mp3", "wav", "wave"));
             int retval = fc.showOpenDialog(this);
             if (retval == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-                editor.loadSong(file);
+                this.editor.loadSong(file);
                 buttonCut.setEnabled(true);
                 buttonVolume.setEnabled(true);
                 log.append("Loaded file: " + file.getAbsolutePath() + "\n");
@@ -98,7 +101,7 @@ public class EditPanel extends JPanel {
             int retval = fc.showSaveDialog(this);
             if (retval == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-                editor.saveSong(file.getAbsolutePath());
+                this.editor.saveSong(file.getAbsolutePath() + ".wav");
                 buttonCut.setEnabled(false);
                 buttonVolume.setEnabled(false);
                 log.append("Saved file: "+ file.getAbsolutePath() + "\n");
@@ -111,7 +114,7 @@ public class EditPanel extends JPanel {
             try {
                 start = Integer.parseInt(editCutStartTime.getText());
                 end = Integer.parseInt(editCutEndTime.getText());
-                editor.cutSong(start, end);
+                this.editor.cutSong(start, end);
                 log.append(String.format("Song cut. Start: %d, end: %d \n", start, end));
                 console.setText(log.toString());
             } catch (NumberFormatException ex) {
@@ -124,7 +127,7 @@ public class EditPanel extends JPanel {
 
         buttonVolume.addActionListener(e -> {
             double factor = sliderVolume.getValue()/sliderVolume.getMaximum();
-            editor.changeVolume(factor);
+            this.editor.changeVolume(factor);
             log.append("Volume changed to ");
             log.append(sliderVolume.getValue());
             log.append("% of input volume.\n");

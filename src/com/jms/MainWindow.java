@@ -396,6 +396,8 @@ public class MainWindow extends JPanel implements PlayerEventListener
      */
     private void setupSlider(){
         progressSlider = new JSlider();
+        progressSlider.setValue(0);
+        progressSlider.setMaximum(0);
         progressSlider.addChangeListener(e -> {
             JSlider s = (JSlider) e.getSource();
             if(s.getValueIsAdjusting()){
