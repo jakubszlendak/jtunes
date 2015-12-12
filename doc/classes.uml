@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="1189.999999999999" y="720.6666666666672">com.jms.PlaylistItemRenderer</node>
+    <node x="575.0" y="0.0">com.jms.Playlist</node>
+    <node x="969.0" y="0.0">com.jms.PlaylistItem</node>
+    <node x="258.5" y="959.0">com.jms.MP3Player.PlayerState</node>
+    <node x="45.5" y="990.5">com.jms.MP3Player.PlaybackOrder</node>
+    <node x="17.0" y="0.0">javazoom.jl.player.advanced.AdvancedPlayer</node>
+    <node x="1046.6666666666654" y="540.6666666666677">com.jms.MainWindow</node>
+    <node x="624.3333333333329" y="434.0000000000009">javazoom.jl.player.advanced.PlaybackEvent</node>
+    <node x="767.3333333333326" y="705.6666666666672">com.jms.PlayerEventListener</node>
+    <node x="619.0000000000005" y="339.00000000000114">javazoom.jl.player.advanced.PlaybackListener</node>
+    <node x="0.0" y="438.0">com.jms.MP3Player</node>
+    <node x="768.6666666666672" y="814.0000000000005">com.jms.Main</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.jms.MainWindow" target="com.jms.PlayerEventListener">
+      <point x="0.0" y="-56.5" />
+      <point x="0.0" y="35.0" />
+    </edge>
+    <edge source="com.jms.MP3Player.PlayerState" target="com.jms.MP3Player">
+      <point x="0.0" y="-87.5" />
+      <point x="388.0" y="934.0" />
+      <point x="397.5" y="934.0" />
+      <point x="132.5" y="235.5" />
+    </edge>
+    <edge source="com.jms.MainWindow" target="com.jms.MP3Player">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="com.jms.MP3Player" target="com.jms.PlayerEventListener">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="com.jms.Playlist" target="com.jms.PlaylistItem">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="com.jms.MP3Player" target="com.jms.MP3Player.PlayerState">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="com.jms.Main" target="com.jms.MP3Player">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="javazoom.jl.player.advanced.AdvancedPlayer" target="javazoom.jl.player.advanced.PlaybackListener">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="javazoom.jl.player.advanced.PlaybackEvent" target="javazoom.jl.player.advanced.AdvancedPlayer">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="com.jms.MP3Player" target="javazoom.jl.player.advanced.AdvancedPlayer">
+      <point x="0.0" y="-235.5" />
+      <point x="0.0" y="194.0" />
+    </edge>
+    <edge source="com.jms.MP3Player.PlaybackOrder" target="com.jms.MP3Player">
+      <point x="0.0" y="-56.0" />
+      <point x="142.0" y="934.0" />
+      <point x="132.5" y="934.0" />
+      <point x="-132.5" y="235.5" />
+    </edge>
+    <edge source="com.jms.MainWindow" target="com.jms.PlaylistItemRenderer">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="com.jms.MP3Player" target="com.jms.MP3Player.PlaybackOrder">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="com.jms.MP3Player" target="com.jms.Playlist">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="com.jms.MainWindow" target="com.jms.PlaylistItem">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="javazoom.jl.player.advanced.AdvancedPlayer" target="javazoom.jl.player.advanced.PlaybackEvent">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="com.jms.MainWindow" target="com.jms.Playlist">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.6000000000000008" x="1058.3333333333317" y="671.6666666666657" />
+  <SelectedNodes>
+    <node>com.jms.MainWindow</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Inner Classes</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>protected</VISIBILITY>
+</Diagram>
+

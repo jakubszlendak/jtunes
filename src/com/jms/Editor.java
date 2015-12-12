@@ -1,5 +1,9 @@
 package com.jms;
 
+import it.sauronsoftware.jave.AudioAttributes;
+import it.sauronsoftware.jave.Encoder;
+import it.sauronsoftware.jave.EncoderException;
+import it.sauronsoftware.jave.EncodingAttributes;
 import javazoom.jl.converter.Converter;
 import javazoom.jl.decoder.JavaLayerException;
 
@@ -7,6 +11,8 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Created by Konrad on 2015-12-01.
@@ -299,7 +305,7 @@ public class Editor
         FileOutputStream outputStream = null;
         try
         {
-            outputStream = new FileOutputStream(filePath);
+            outputStream = new FileOutputStream("temp.wav");
             outputStream.write(this.rawData);
             outputStream.close();
         } catch (FileNotFoundException e)
@@ -310,6 +316,15 @@ public class Editor
             e.printStackTrace();
         }
 
+        file = new File("temp.wav");
+        convertWavToMP3(filePath);
+        try
+        {
+            Files.delete(file.toPath());
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -347,5 +362,33 @@ public class Editor
     public WavTagReader getWavTagReader()
     {
         return wavTagReader;
+    }
+
+    public void convertWavToMP3(String filePath)
+    {
+        String codecs[];
+        String formats[];
+        Encoder encoder = new Encoder();
+        EncodingAttributes att = new EncodingAttributes();
+        try
+        {
+            codecs = encoder.getAudioEncoders();
+            formats = encoder.getSupportedEncodingFormats();
+            AudioAttributes audioAtt = new AudioAttributes();
+            audioAtt.setBitRate(this.wavTagReader.getByteRate()*this.wavTagReader.getBitsPerSample()*this.wavTagReader
+                    .getNumOfChannels());
+            audioAtt.setChannels(Integer.valueOf(this.wavTagReader.getNumOfChannels()));
+            audioAtt.setSamplingRate(this.wavTagReader.getSampleRate());
+            audioAtt.setVolume(255);
+            audioAtt.setCodec(AudioAttributes.DIRECT_STREAM_COPY );
+            att.setAudioAttributes(audioAtt);
+            att.setFormat("mp3");
+            encoder.encode(this.file, new File(filePath), att);
+        } catch (EncoderException e)
+        {
+            e.printStackTrace();
+        }
+
+
     }
 }

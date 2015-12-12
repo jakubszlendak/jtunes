@@ -60,7 +60,7 @@ public class MainWindow extends JPanel implements PlayerEventListener
 
     // Panels
     private JPanel mainPanel;
-    private JPanel editPanel;
+    private EditPanel editPanel;
     private JPanel playlistPanel;
 
     // Playlist widget
@@ -73,7 +73,7 @@ public class MainWindow extends JPanel implements PlayerEventListener
     // Flags
     private boolean editModeEnabled = false;
 
-    public MainWindow(MP3Player player)
+    public MainWindow(MP3Player player, Editor editor)
     {
         // Superclass constructor call
         super(new BorderLayout());
@@ -87,7 +87,7 @@ public class MainWindow extends JPanel implements PlayerEventListener
 
         // Setup main panel with card layout
         mainPanel = new JPanel(new CardLayout());
-        editPanel = new JPanel();
+        editPanel = new EditPanel(editor);
         playlistPanel = new JPanel();
 
         // Setup toolbar panel
@@ -102,8 +102,8 @@ public class MainWindow extends JPanel implements PlayerEventListener
         // Setup playlist display list
         playlistDisplay = new JList();
         JScrollPane scrollPane = new JScrollPane(playlistDisplay);
-        scrollPane.setPreferredSize(new Dimension(800, 200));
-        scrollPane.setMinimumSize(new Dimension(600, 200));
+        scrollPane.setPreferredSize(new Dimension(800, 400));
+        scrollPane.setMinimumSize(new Dimension(600, 400));
 
 
         playlistDisplay.setCellRenderer(new PlaylistItemRenderer());
@@ -408,10 +408,10 @@ public class MainWindow extends JPanel implements PlayerEventListener
 
     }
 
-    public static void makeGUI(MP3Player player)
+    public static void makeGUI(MP3Player player, Editor editor)
     {
         JFrame frame = new JFrame("jTunes");
-        JComponent contentPane = new MainWindow(player);
+        JComponent contentPane = new MainWindow(player, editor);
         contentPane.setOpaque(true);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

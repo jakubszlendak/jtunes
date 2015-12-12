@@ -11,19 +11,11 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Editor editor = new Editor();
-        editor.convertMP3ToWav("Hard_Row.mp3", "Hard_Row.wav");
-        editor.loadSong(new File("Hard_Row.wav"));
-        editor.cutSong(5, 8);
-        //editor.changeVolume(0.7);
-        editor.saveSong("C:/Users/Konrad/Desktop/cutSong.wav");
         try
         {
-            MP3Player mp3Player = new MP3Player(/*new File("01_The_Trail.mp3")*/);
-          //  mp3Player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("01_The_Trail.mp3")));
-            //mp3Player.getPlaylist().addPlaylistItem(new PlaylistItem(new File("35 Hunt Or Be Hunted.mp3")));
-            //mp3Player.continuousOrderPlay();
-            Runnable task = () -> MainWindow.makeGUI(mp3Player);
+            Editor editor = new Editor();
+            MP3Player mp3Player = new MP3Player();
+            Runnable task = () -> MainWindow.makeGUI(mp3Player, editor);
             javax.swing.SwingUtilities.invokeLater(task);
 
         } catch (JavaLayerException e)
