@@ -126,7 +126,9 @@ public class EditPanel extends JPanel {
         });
 
         buttonVolume.addActionListener(e -> {
-            double factor = sliderVolume.getValue()/sliderVolume.getMaximum();
+            double val = sliderVolume.getValue();
+            double max = sliderVolume.getMaximum();
+            double factor =val/max;
             this.editor.changeVolume(factor);
             log.append("Volume changed to ");
             log.append(sliderVolume.getValue());
