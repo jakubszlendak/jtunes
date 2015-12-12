@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by jakub on 15.11.15.
+ * Main Window with Player perspective.
  */
 public class MainWindow extends JPanel implements PlayerEventListener
 {
@@ -73,6 +73,11 @@ public class MainWindow extends JPanel implements PlayerEventListener
     // Flags
     private boolean editModeEnabled = false;
 
+    /**
+     * Default constructor. Gets Player and Editor with dependency injection
+     * @param player instance of MP3Player
+     * @param editor instance of Editor
+     */
     public MainWindow(MP3Player player, Editor editor)
     {
         // Superclass constructor call
@@ -102,8 +107,8 @@ public class MainWindow extends JPanel implements PlayerEventListener
         // Setup playlist display list
         playlistDisplay = new JList();
         JScrollPane scrollPane = new JScrollPane(playlistDisplay);
-        scrollPane.setPreferredSize(new Dimension(800, 400));
-        scrollPane.setMinimumSize(new Dimension(600, 400));
+        scrollPane.setPreferredSize(new Dimension(1200, 600));
+        scrollPane.setMinimumSize(new Dimension(1200, 600));
 
 
         playlistDisplay.setCellRenderer(new PlaylistItemRenderer());
@@ -396,6 +401,9 @@ public class MainWindow extends JPanel implements PlayerEventListener
      */
     private void setupSlider(){
         progressSlider = new JSlider();
+
+        progressSlider.setValue(0);
+        progressSlider.setMaximum(0);
         progressSlider.addChangeListener(e -> {
             JSlider s = (JSlider) e.getSource();
             if(s.getValueIsAdjusting()){
@@ -405,6 +413,7 @@ public class MainWindow extends JPanel implements PlayerEventListener
             }
 
         });
+
 
     }
 

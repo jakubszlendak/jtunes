@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Created by Konrad on 2015-12-01.
+ * Performs reading WAVE file header
  */
 class WavTagReader
 {
@@ -170,72 +170,115 @@ class WavTagReader
         readSubchunk2Size(subchunk2Index + 4);
     }
 
-    public int getChunkID()
-    {
-        return chunkID;
-    }
+//    /**
+//     * Returns chunk ID
+//     * @return chunk ID
+//     */
+//    public int getChunkID()
+//    {
+//        return chunkID;
+//    }
+//
+//    /**
+//     * Returns chunk size
+//     * @return chunk size
+//     */
+//    public int getChunkSize()
+//    {
+//        return chunkSize;
+//    }
+//
+//    /**
+//     * Return WAV format type
+//     * @return code of format
+//     */
+//    public int getWavFormat()
+//    {
+//        return wavFormat;
+//    }
 
-    public int getChunkSize()
-    {
-        return chunkSize;
-    }
+//    /**
+//     * Returns subchunk ID
+//     * @return subchunk ID
+//     */
+//    public int getSubchunk1ID()
+//    {
+//        return subchunk1ID;
+//    }
 
-    public int getWavFormat()
-    {
-        return wavFormat;
-    }
+//    /**
+//     * Returns subchunk size
+//     * @return subchunk size
+//     */
+//    public int getSubchunk1Size()
+//    {
+//        return subchunk1Size;
+//    }
+//
+//    /**
+//     * Returns
+//     * @return
+//     */
+////    public short getAudioFormat()
+////    {
+////        return audioFormat;
+////    }
 
-    public int getSubchunk1ID()
-    {
-        return subchunk1ID;
-    }
-
-    public int getSubchunk1Size()
-    {
-        return subchunk1Size;
-    }
-
-    public short getAudioFormat()
-    {
-        return audioFormat;
-    }
-
+    /**
+     * Returns number of channels
+     * @return number of channels
+     */
     public short getNumOfChannels()
     {
         return numOfChannels;
     }
 
+    /**
+     * Returns sample rate (samples per second)
+     * @return sample rate
+     */
     public int getSampleRate()
     {
         return sampleRate;
     }
 
+    /**
+     * Return byte rate (bytes per second)
+     * @return byte rate
+     */
     public int getByteRate()
     {
         return byteRate;
     }
+//
+//    public short getBlockAlign()
+//    {
+//        return blockAlign;
+//    }
 
-    public short getBlockAlign()
-    {
-        return blockAlign;
-    }
-
+    /**
+     * Returns number of bits per sample
+     * @return
+     */
     public short getBitsPerSample()
     {
         return bitsPerSample;
     }
 
-    public int getSubchunk2ID()
-    {
-        return subchunk2ID;
-    }
+//    public int getSubchunk2ID()
+//    {
+//        return subchunk2ID;
+//    }
 
-    public int getSubchunk2Size()
-    {
-        return subchunk2Size;
-    }
+//    public int getSubchunk2Size()
+//    {
+//        return subchunk2Size;
+//    }
 }
 
+/**
+ * Wraps logic of music file editing
+ */
 public class Editor
 {
     private Converter converter;
@@ -245,6 +288,9 @@ public class Editor
     byte rawData[];
     private WavTagReader wavTagReader;
 
+    /**
+     * Default constructor, creates instance of Converter
+     */
     public Editor()
     {
         converter = new Converter();
@@ -376,6 +422,8 @@ public class Editor
             outputStream = new FileOutputStream("temp.wav");
             outputStream.write(this.rawData);
             outputStream.close();
+            convertWavToMP3("temp.wav", filePath);
+
         } catch (FileNotFoundException e)
         {
             e.printStackTrace();
@@ -470,7 +518,7 @@ public class Editor
     public void changeVolume(double gainFactor)
     {
         int sample = 0;
-        for(int i=wavTagReader.getFirstSampleIndex(); i<rawData.length; i=i+2)
+        for(int i=wavTagReader.getFirstSampleIndex(); i<rawData.length-2; i=i+2)
         {
             sample = (short)rawData[i] +  (short)((rawData[i+1] << 8) & 0xFF00);
             sample *= gainFactor;
@@ -479,11 +527,19 @@ public class Editor
         }
     }
 
+    /**
+     * Returns reference to WavTagReader instance
+     * @return  WavTagReader instance
+     */
     public WavTagReader getWavTagReader()
     {
         return wavTagReader;
     }
 
+    /**
+     * Converts WAV file to MP3
+     * @param filePath path on which MP3 file will be saved
+     */
     public void convertWavToMP3(String filePath)
     {
         String codecs[];

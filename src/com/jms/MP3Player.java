@@ -10,28 +10,70 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Konrad on 2015-11-22.
+ * Main class of MP3 player.
  */
 public class MP3Player extends AdvancedPlayer
 {
 
 
+    /**
+     * Enumeration of possible states of player
+     */
     public enum PlayerState
     {
+        /**
+         * No playback ongoing
+         */
         STATE_STOPPED,
+        /**
+         * Playback is paused on certain frame
+         */
         STATE_PAUSED,
+        /**
+         * Song is played
+         */
         STATE_PLAYING,
+        /**
+         * No file is loaded
+         */
         STATE_NO_FILE,
+        /**
+         * Next song is requested
+         */
         STATE_NEXT_SONG_REQUESTED,
+        /**
+         * Previous song is requested
+         */
         STATE_PREV_SONG_REQUESTED,
+        /**
+         * Certain song is requested
+         */
         STATE_SONG_REQUESTED
     }
 
+    /**
+     * Enumeration of possible playback modes
+     */
     public enum PlaybackOrder
     {
+        /**
+         * Playlist-order playing
+         */
         PLAY_IN_ORDER,
+
+        /**
+         * Repeating single song
+         */
         REPEAT_SINGLE,
+
+        /**
+         * Plaing given song once
+         */
         PLAY_SINGLE,
+
+        /**
+         * Playing playlist with random order
+         */
         PLAY_RANDOM
     }
 
@@ -49,8 +91,7 @@ public class MP3Player extends AdvancedPlayer
 
     private List<PlayerEventListener> listener = new ArrayList<PlayerEventListener>();
 
-    /**
-     * @param file
+    /**Default constructor, creates instance of Playlist
      * @throws JavaLayerException
      */
     public MP3Player(/*File file*/) throws JavaLayerException

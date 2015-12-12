@@ -1,12 +1,17 @@
 package com.jms;
 
 /**
- * Created by Konrad on 2015-11-28.
+ * Listener of PlayerEvents interface
  */
 public interface PlayerEventListener
 {
-    /// The event function
+    /**
+     * Song changed event
+     */
     void songChanged();
-    /// The event for song current time update
+
+    /**
+     * Playback time update
+     */
     void updateSongTime();
 }

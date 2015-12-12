@@ -23,8 +23,7 @@ package javazoom.jl.player.advanced;
  * An event which indicates a <code>Player</code> has performed an 'playback action'
  * @author Paul Stanton (http://wanto.f2o.org/)
  */
-public class PlaybackEvent
-{
+public class PlaybackEvent extends AdvancedPlayer {
 	public static int STOPPED = 1;
 	public static int STARTED = 2;
 
