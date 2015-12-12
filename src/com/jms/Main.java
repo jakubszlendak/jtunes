@@ -7,10 +7,16 @@ import org.farng.mp3.TagException;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Main class
+ */
 public class Main {
 
+    /**
+     * Entry point of application
+     * @param args command line arguments (not used)
+     */
     public static void main(String[] args) {
-
 
         try
         {

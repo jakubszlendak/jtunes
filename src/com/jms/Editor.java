@@ -1,5 +1,9 @@
 package com.jms;
 
+import it.sauronsoftware.jave.AudioAttributes;
+import it.sauronsoftware.jave.Encoder;
+import it.sauronsoftware.jave.EncoderException;
+import it.sauronsoftware.jave.EncodingAttributes;
 import javazoom.jl.converter.Converter;
 import javazoom.jl.decoder.JavaLayerException;
 
@@ -7,9 +11,11 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
- * Created by Konrad on 2015-12-01.
+ * Performs reading WAVE file header
  */
 class WavTagReader
 {
@@ -167,72 +173,115 @@ class WavTagReader
         readSubchunk2Size(subchunk2Index + 4);
     }
 
-    public int getChunkID()
-    {
-        return chunkID;
-    }
+//    /**
+//     * Returns chunk ID
+//     * @return chunk ID
+//     */
+//    public int getChunkID()
+//    {
+//        return chunkID;
+//    }
+//
+//    /**
+//     * Returns chunk size
+//     * @return chunk size
+//     */
+//    public int getChunkSize()
+//    {
+//        return chunkSize;
+//    }
+//
+//    /**
+//     * Return WAV format type
+//     * @return code of format
+//     */
+//    public int getWavFormat()
+//    {
+//        return wavFormat;
+//    }
 
-    public int getChunkSize()
-    {
-        return chunkSize;
-    }
+//    /**
+//     * Returns subchunk ID
+//     * @return subchunk ID
+//     */
+//    public int getSubchunk1ID()
+//    {
+//        return subchunk1ID;
+//    }
 
-    public int getWavFormat()
-    {
-        return wavFormat;
-    }
+//    /**
+//     * Returns subchunk size
+//     * @return subchunk size
+//     */
+//    public int getSubchunk1Size()
+//    {
+//        return subchunk1Size;
+//    }
+//
+//    /**
+//     * Returns
+//     * @return
+//     */
+////    public short getAudioFormat()
+////    {
+////        return audioFormat;
+////    }
 
-    public int getSubchunk1ID()
-    {
-        return subchunk1ID;
-    }
-
-    public int getSubchunk1Size()
-    {
-        return subchunk1Size;
-    }
-
-    public short getAudioFormat()
-    {
-        return audioFormat;
-    }
-
+    /**
+     * Returns number of channels
+     * @return number of channels
+     */
     public short getNumOfChannels()
     {
         return numOfChannels;
     }
 
+    /**
+     * Returns sample rate (samples per second)
+     * @return sample rate
+     */
     public int getSampleRate()
     {
         return sampleRate;
     }
 
+    /**
+     * Return byte rate (bytes per second)
+     * @return byte rate
+     */
     public int getByteRate()
     {
         return byteRate;
     }
+//
+//    public short getBlockAlign()
+//    {
+//        return blockAlign;
+//    }
 
-    public short getBlockAlign()
-    {
-        return blockAlign;
-    }
-
+    /**
+     * Returns number of bits per sample
+     * @return
+     */
     public short getBitsPerSample()
     {
         return bitsPerSample;
     }
 
-    public int getSubchunk2ID()
-    {
-        return subchunk2ID;
-    }
+//    public int getSubchunk2ID()
+//    {
+//        return subchunk2ID;
+//    }
 
-    public int getSubchunk2Size()
-    {
-        return subchunk2Size;
-    }
+//    public int getSubchunk2Size()
+//    {
+//        return subchunk2Size;
+//    }
 }
 
+/**
+ * Wraps logic of music file editing
+ */
 public class Editor
 {
     private Converter converter;
@@ -242,9 +291,12 @@ public class Editor
     byte rawData[];
     private WavTagReader wavTagReader;
 
+    /**
+     * Default constructor, creates instance of Converter
+     */
     public Editor()
     {
-
+        converter = new Converter();
     }
 
     /**
@@ -299,7 +351,7 @@ public class Editor
         FileOutputStream outputStream = null;
         try
         {
-            outputStream = new FileOutputStream(filePath);
+            outputStream = new FileOutputStream("temp.wav");
             outputStream.write(this.rawData);
             outputStream.close();
         } catch (FileNotFoundException e)
@@ -309,15 +361,37 @@ public class Editor
         {
             e.printStackTrace();
         }
-
     }
 
     /**
-     * This function is responsible for cutting the currently edited .WAV song.
+     * This function saves given array with WAV song to the file with given filepathh
+     * @param filePath - the path to the file where the song is to be saved
+     * @param wavSong - the array containing song raw data
+     */
+    public void saveSong(String filePath, byte wavSong[])
+    {
+        FileOutputStream outputStream = null;
+        try
+        {
+            outputStream = new FileOutputStream(filePath);
+            outputStream.write(wavSong);
+            outputStream.close();
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This function is responsible for muting the fragment of the currently edited .WAV song.
      * @param startSecond - the start time from which the song is cutted
      * @param endSecond - the end time to which the song is cutted
      */
-    public void cutSong(int startSecond, int endSecond)
+    public void muteSong(int startSecond, int endSecond)
     {
         int startIndex = wavTagReader.getFirstSampleIndex() + startSecond*wavTagReader.sampleRate*wavTagReader.numOfChannels*wavTagReader
             .bitsPerSample/8;
@@ -325,6 +399,45 @@ public class Editor
 
         for(int i=startIndex; i<endIndex; i++)
             rawData[i] = 0;
+    }
+
+    /**
+     * This function cuts the fragment of song, and puts it in another byte array. It assigns also the header of the
+     * edited song to the cut fragment
+     * @param startSecond - the start second to cut
+     * @param endSecond - the end second to cut
+     * @return reference to the array with cut fragment.
+     */
+    public byte[] cutSong(int startSecond, int endSecond)
+    {
+        int startIndex = wavTagReader.getFirstSampleIndex() + startSecond*wavTagReader.sampleRate*wavTagReader.numOfChannels*wavTagReader
+                .bitsPerSample/8;
+        int endIndex = wavTagReader.getFirstSampleIndex() + endSecond*wavTagReader.sampleRate*wavTagReader.numOfChannels*wavTagReader.bitsPerSample/8;
+
+        byte cutSong[] = new byte[wavTagReader.getFirstSampleIndex() + (endIndex - startIndex)];
+
+        /// Copy the song header except for data field size
+        for(int i=0; i< wavTagReader.getFirstSampleIndex()-4;i++)
+        {
+            cutSong[i] = rawData[i];
+        }
+
+        /// Set the new data size
+        int samplesSize = endIndex - startIndex;
+        int firstSampleIndex = wavTagReader.getFirstSampleIndex();
+        for(int i=0; i<4; i++)
+        {
+            cutSong[firstSampleIndex-4+i] = (byte)((samplesSize >>> (i*8)) & 0xFF);
+        }
+
+        int byteIndex = startIndex;
+        /// Copy the data
+        for(int i=wavTagReader.getFirstSampleIndex(); i<cutSong.length;i++)
+        {
+            cutSong[i] = rawData[byteIndex++];
+        }
+
+        return cutSong;
     }
 
     /**
@@ -344,8 +457,44 @@ public class Editor
         }
     }
 
+    /**
+     * Returns reference to WavTagReader instance
+     * @return  WavTagReader instance
+     */
     public WavTagReader getWavTagReader()
     {
         return wavTagReader;
+    }
+
+    /**
+     * Converts WAV file to MP3
+     * @param filePath path on which MP3 file will be saved
+     */
+    public void convertWavToMP3(String filePath)
+    {
+        String codecs[];
+        String formats[];
+        Encoder encoder = new Encoder();
+        EncodingAttributes att = new EncodingAttributes();
+        try
+        {
+            codecs = encoder.getAudioEncoders();
+            formats = encoder.getSupportedEncodingFormats();
+            AudioAttributes audioAtt = new AudioAttributes();
+            audioAtt.setBitRate(this.wavTagReader.getByteRate()*this.wavTagReader.getBitsPerSample()*this.wavTagReader
+                    .getNumOfChannels());
+            audioAtt.setChannels(Integer.valueOf(this.wavTagReader.getNumOfChannels()));
+            audioAtt.setSamplingRate(this.wavTagReader.getSampleRate());
+            audioAtt.setVolume(255);
+            audioAtt.setCodec(AudioAttributes.DIRECT_STREAM_COPY );
+            att.setAudioAttributes(audioAtt);
+            att.setFormat("mp3");
+            encoder.encode(this.file, new File(filePath), att);
+        } catch (EncoderException e)
+        {
+            e.printStackTrace();
+        }
+
+
     }
 }
