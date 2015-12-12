@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * Created by jakub on 17.11.15.
  * Renderer class of playlist item. Responsible for rendering content of playlist item in GUI
  */
 public class PlaylistItemRenderer extends JPanel implements ListCellRenderer<PlaylistItem> {

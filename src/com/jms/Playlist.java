@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.LinkedList;
 
 /**
- * Created by jakub on 16.11.15.
+ * Playlist containter. Implements AbstractListModel for cooperation with JList
  */
 public class Playlist extends AbstractListModel<PlaylistItem> {
 
@@ -17,7 +17,9 @@ public class Playlist extends AbstractListModel<PlaylistItem> {
     private String lastSongDir = "C:/Users/";
 
 
-
+    /**
+     * Default constructor, creates empty list
+     */
     public Playlist(){
         playlist = new LinkedList<>();
         currentElementIndex = -1;

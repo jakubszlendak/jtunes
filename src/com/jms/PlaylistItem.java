@@ -18,7 +18,7 @@ import org.tritonus.share.sampled.file.TAudioFileFormat;
 
 //import org.tritonus.share.
 /**
- * Created by jakub on 16.11.15.
+ * Playlist item. Contains MP3 metadata (tags) readout.
  */
 public class PlaylistItem {
     File file;

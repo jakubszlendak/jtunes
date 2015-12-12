@@ -139,6 +139,13 @@ Z kolei wycinanie fragmentu piosenki polega na wycięciu części bajtów i wsta
 \label{sec:Interfejs}
 Interfejs użytkownika został zaimplentowany przy użyciu biblioteki Swing.
 
+\begin{figure}[hb]
+ \centering
+ \includegraphics[width=0.9\textwidth]{img/player_blank.png}
+ \caption{Okno główne programu}
+ \label{fig:player_blank}
+\end{figure}
+
 Rysunek \ref{fig:player_blank} przedstawia okno programu tuż po jego załadowaniu. Program jest w trybie odtwarzania. W górnej części okna widoczny jest pasek narzędzi odtwarzania. Funkcje kolejnych
 przycisków:
 \begin{itemize}
@@ -158,7 +165,7 @@ album i tytuł, bądź nazwę pliku jeśli metadane nie są dostępne) oraz dłu
 
 Po prawej stronie panelu listy odtwarzania umieszczono przyciski manipulowania listą. Pozwalają one na przesuwanie zaznaczonego elementu playlisty do góry, w dół bądź usuwanie go.
 
-Aby rozpocząć odtwarzanie należy klikąć przycisk ``Otwórz'', a następnie wybrać co najmniej jeden plik muzyczny do otwarcia (możliwe jest wybranie wielu plików, patrz rys. \ref{fig:open}).
+Aby rozpocząć odtwarzanie należy klikąć przycisk ,,Otwórz'', a następnie wybrać co najmniej jeden plik muzyczny do otwarcia (możliwe jest wybranie wielu plików, patrz rys. \ref{fig:open}).
 Wybrane pliki zostają dodane do listy odtwarzania. Następnie należy wybrać jedną z 4 opcji porządku odtwarzania za pomocą listy rozwijanej:
 \begin{description}
  \item[Repeat playlist] odtwarzanie w porządku listy - piosenki z listy są odtwarzana kolejno, gdy osiągnięty zostanie koniec listy, odtwarzanie jest przenoszone na początek
@@ -166,17 +173,7 @@ Wybrane pliki zostają dodane do listy odtwarzania. Następnie należy wybrać j
  \item[Play single] odwarzanie zaznaczonej piosenki, po osiągnięciu końca piosenki otwarzanie zostaje zakończone
  \item[Repeat single] zaznaczona piosenka jest odwarzana w pętli
 \end{description}
-Po wybraniu trybu odtwarzania można rozpocząć otwarzanie przyciskiem ``Odtwarzaj'' lub przez dwukrotne kliknięcie piosenki na liście.
-
-
-
-\begin{figure}[hb]
- \centering
- \includegraphics[width=0.9\textwidth]{img/player_blank.png}
- \caption{Okno główne programu}
- \label{fig:player_blank}
-\end{figure}
-
+Po wybraniu trybu odtwarzania można rozpocząć otwarzanie przyciskiem ,,Odtwarzaj'' lub przez dwukrotne kliknięcie piosenki na liście.
 
 \begin{figure}[hb]
  \centering
@@ -191,6 +188,32 @@ Po wybraniu trybu odtwarzania można rozpocząć otwarzanie przyciskiem ``Odtwar
  \caption{Okno otwierania pliku}
  \label{fig:open}
 \end{figure}
+
+Po wybraniu przycisku edycji otwarty zostaje widok edycji (por. rys. \ref{fig:editor}). Przyciski odtwarzania są nadal dostępne i odtwarzanie może być kontynuowane. W panelu edycji widoczne
+są cztery sekcje:
+\begin{itemize}
+ \item przyciski otwierania i zapisu pliku
+ \item kontrolki do przycinania pliku
+ \item kontrolki do wyciszania fragmentu pliku
+ \item kontrolki do zmiany głośności pliku
+\end{itemize}
+
+Przyciski edycyjne są nieaktywne do momentu załadowania pliku za pomocą przycisku ,,Open file''. Po zakończeniu edycji plik można zapisać za pomocą przycisku ,,Save file''. 
+W celu wykonania przycięcia bądź wyciszenia piosenki, należy wpisać w odpowiednie pola edycyjne moment początku i końca modyfikacji (w sekundach). Modyfikacja głośności sprowadza się do 
+wybrania nowej głośności (w procentach) i kliknięcia przycisku ,,Change volume''. Możliwe jest wykonanie kliku operacji edycyjnych na jedno załadowanie pliku.
+
+\begin{figure}[hb]
+ \centering
+ \includegraphics[width=0.9\textwidth]{img/editor.png}
+ \caption{Ekran edycji}
+ \label{fig:editor}
+\end{figure}
+
+\begin{figure}[hb]
+ \centering
+ \includegraphics[width=1.1\textwidth]{img/diagram.png}
+\end{figure}
+
 
 
 \end{document}

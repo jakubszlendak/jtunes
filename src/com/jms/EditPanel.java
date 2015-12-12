@@ -6,7 +6,7 @@ import java.awt.*;
 import java.io.File;
 
 /**
- * Created by jakub on 07.12.15.
+ *  Panel with editing controls
  */
 public class EditPanel extends JPanel {
     private JTextField editCutStartTime;
@@ -30,6 +30,11 @@ public class EditPanel extends JPanel {
 
 
     private Editor editor;
+
+    /**
+     * Creates Edit panel
+     * @param editor Instance of Editor
+     */
     public EditPanel(Editor editor)
     {
         this.editor = editor;
