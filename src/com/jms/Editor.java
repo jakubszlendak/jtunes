@@ -309,15 +309,36 @@ public class Editor
         {
             e.printStackTrace();
         }
-
     }
 
     /**
-     * This function is responsible for cutting the currently edited .WAV song.
+     * This function saves given array with WAV song to the file with given filepathh
+     * @param filePath - the path to the file where the song is to be saved
+     * @param wavSong - the array containing song raw data
+     */
+    public void saveSong(String filePath, byte wavSong[])
+    {
+        FileOutputStream outputStream = null;
+        try
+        {
+            outputStream = new FileOutputStream(filePath);
+            outputStream.write(wavSong);
+            outputStream.close();
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This function is responsible for muting the fragment of the currently edited .WAV song.
      * @param startSecond - the start time from which the song is cutted
      * @param endSecond - the end time to which the song is cutted
      */
-    public void cutSong(int startSecond, int endSecond)
+    public void muteSong(int startSecond, int endSecond)
     {
         int startIndex = wavTagReader.getFirstSampleIndex() + startSecond*wavTagReader.sampleRate*wavTagReader.numOfChannels*wavTagReader
             .bitsPerSample/8;
@@ -325,6 +346,45 @@ public class Editor
 
         for(int i=startIndex; i<endIndex; i++)
             rawData[i] = 0;
+    }
+
+    /**
+     * This function cuts the fragment of song, and puts it in another byte array. It assigns also the header of the
+     * edited song to the cut fragment
+     * @param startSecond - the start second to cut
+     * @param endSecond - the end second to cut
+     * @return reference to the array with cut fragment.
+     */
+    public byte[] cutSong(int startSecond, int endSecond)
+    {
+        int startIndex = wavTagReader.getFirstSampleIndex() + startSecond*wavTagReader.sampleRate*wavTagReader.numOfChannels*wavTagReader
+                .bitsPerSample/8;
+        int endIndex = wavTagReader.getFirstSampleIndex() + endSecond*wavTagReader.sampleRate*wavTagReader.numOfChannels*wavTagReader.bitsPerSample/8;
+
+        byte cutSong[] = new byte[wavTagReader.getFirstSampleIndex() + (endIndex - startIndex)];
+
+        /// Copy the song header except for data field size
+        for(int i=0; i< wavTagReader.getFirstSampleIndex()-4;i++)
+        {
+            cutSong[i] = rawData[i];
+        }
+
+        /// Set the new data size
+        int samplesSize = endIndex - startIndex;
+        int firstSampleIndex = wavTagReader.getFirstSampleIndex();
+        for(int i=0; i<4; i++)
+        {
+            cutSong[firstSampleIndex-4+i] = (byte)((samplesSize >>> (i*8)) & 0xFF);
+        }
+
+        int byteIndex = startIndex;
+        /// Copy the data
+        for(int i=wavTagReader.getFirstSampleIndex(); i<cutSong.length;i++)
+        {
+            cutSong[i] = rawData[byteIndex++];
+        }
+
+        return cutSong;
     }
 
     /**
