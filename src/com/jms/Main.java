@@ -24,7 +24,7 @@ public class Main {
             editor.saveSong("C:/Users/Konrad/Desktop/cutSong.wav", editedSong);
 
 
-            
+
             MP3Player mp3Player = new MP3Player();
             Runnable task = () -> MainWindow.makeGUI(mp3Player, editor);
             javax.swing.SwingUtilities.invokeLater(task);
