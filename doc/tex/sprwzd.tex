@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{amsmath}
+\usepackage{float}
 
 \usepackage[top=2cm, bottom=2cm, left=3cm, right=3cm]{geometry}
 
@@ -96,7 +97,7 @@ Ponieważ zaimplementowanie dekodowania ramek pliku MP3 jest zadaniem złożonym
 GPL przez firmę JavaZoom. Z wspomnianej biblioteki wykorzystano dekoder ramek MP3 oraz konwerter plików MP3 na format WAVE. Klasa odtwarzacza dostarczana przez wymienioną bibliotekę została zmodyfikowana do potrzeb projektu. 
 
 Program był rozwijany jednocześnie na dwóch systemach operacyjnych: Windows 7 oraz Linux Ubuntu 14.04. Jego implementacja nie jest zależna od systemu operacyjnego, jest to zatem aplikacja wieloplatformowa. 
-
+W implementacji projektu zastosowano środowisko IntelliJ IDEA firmy JetBrains oraz system kontroli wersji Git.
 \section{Algorytm odtwarzania}
 \label{sec:odtwarzanie}
 Za odtwarzanie muzyki odpowiadają klasy \emph{AdvancedPlayer} i \emph{Player}.   
@@ -139,7 +140,7 @@ Z kolei wycinanie fragmentu piosenki polega na wycięciu części bajtów i wsta
 \label{sec:Interfejs}
 Interfejs użytkownika został zaimplentowany przy użyciu biblioteki Swing.
 
-\begin{figure}[hb]
+\begin{figure}[H]
  \centering
  \includegraphics[width=0.9\textwidth]{img/player_blank.png}
  \caption{Okno główne programu}
@@ -175,14 +176,14 @@ Wybrane pliki zostają dodane do listy odtwarzania. Następnie należy wybrać j
 \end{description}
 Po wybraniu trybu odtwarzania można rozpocząć otwarzanie przyciskiem ,,Odtwarzaj'' lub przez dwukrotne kliknięcie piosenki na liście.
 
-\begin{figure}[hb]
+\begin{figure}[H]
  \centering
  \includegraphics[width=0.9\textwidth]{img/player_playing.png}
  \caption{Okno główne programu podczas odtwarzania}
  \label{fig:player_playing}
 \end{figure}
 
-\begin{figure}[hb]
+\begin{figure}[H]
  \centering
  \includegraphics[width=0.6\textwidth]{img/open.png}
  \caption{Okno otwierania pliku}
@@ -202,18 +203,40 @@ Przyciski edycyjne są nieaktywne do momentu załadowania pliku za pomocą przyc
 W celu wykonania przycięcia bądź wyciszenia piosenki, należy wpisać w odpowiednie pola edycyjne moment początku i końca modyfikacji (w sekundach). Modyfikacja głośności sprowadza się do 
 wybrania nowej głośności (w procentach) i kliknięcia przycisku ,,Change volume''. Możliwe jest wykonanie kliku operacji edycyjnych na jedno załadowanie pliku.
 
-\begin{figure}[hb]
+\begin{figure}[H]
  \centering
  \includegraphics[width=0.9\textwidth]{img/editor.png}
  \caption{Ekran edycji}
  \label{fig:editor}
 \end{figure}
 
-\begin{figure}[hb]
+
+
+\section{Schemat klas}
+Na rysunku \ref{fig:diagram} zawarto schemat klas wg standardu UML, wygenerowany za pomocą narzędzi wbudowanych w środowisko IntelliJ IDEA.
+\begin{figure}[H]
  \centering
  \includegraphics[width=1.1\textwidth]{img/diagram.png}
+ \caption{Schemat klas}
+ \label{fig:diagram}
 \end{figure}
 
+\section{Schemat blokowy algorytmu}
+Poniżej zawarto schemat blokowy algorytmu odtwarzania i edycji pliku.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/alg_play.png}
+ \caption{Algorytm odtwarzania}
+ \label{fig:alg_play}
+\end{figure}
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{img/alg_edit.png}
+ \caption{Algorytm edycji}
+ \label{fig:alg_edit}
+\end{figure}
 
 
 \end{document}

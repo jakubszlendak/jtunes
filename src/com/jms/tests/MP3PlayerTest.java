@@ -39,21 +39,6 @@ public class MP3PlayerTest extends TestCase {
         assertNotNull(instance.getPlayerEventListeners());
     }
 
-    public void testSendSongChangedEvt() throws Exception {
-//        instance.addListener(new PlayerEventListener() {
-//            @Override
-//            public void songChanged() {
-//            }
-//
-//            @Override
-//            public void updateSongTime() {
-//
-//            }
-//        });
-//        instance.sendSongChangedEvt();
-
-    }
-
     public void testSongTimeUpdateEvt() throws Exception {
 
     }
@@ -66,7 +51,7 @@ public class MP3PlayerTest extends TestCase {
     public void testPauseSong() throws Exception {
         instance.setPlaybackOrder(MP3Player.PlaybackOrder.PLAY_IN_ORDER);
         instance.executeTask();
-        Thread.sleep(10);
+        Thread.sleep(500);
         instance.pauseSong();
         assertEquals(MP3Player.PlayerState.STATE_PAUSED, instance.getState());
 
@@ -87,7 +72,7 @@ public class MP3PlayerTest extends TestCase {
     public void testStopSong() throws Exception {
         instance.setPlaybackOrder(MP3Player.PlaybackOrder.PLAY_IN_ORDER);
         instance.executeTask();
-        Thread.sleep(100);
+        Thread.sleep(500);
         instance.stopSong();
         assertEquals(MP3Player.PlayerState.STATE_STOPPED, instance.getState());
     }
@@ -105,7 +90,8 @@ public class MP3PlayerTest extends TestCase {
     }
 
     public void testSetPlaybackOrder() throws Exception {
-
+        instance.setPlaybackOrder(MP3Player.PlaybackOrder.PLAY_SINGLE);
+        assertEquals(MP3Player.PlaybackOrder.PLAY_SINGLE, instance.getPlaybackOrder());
     }
 
     public void testSetPlaylist() throws Exception {
@@ -117,26 +103,11 @@ public class MP3PlayerTest extends TestCase {
 
     }
 
-    public void testSetEqualizer() throws Exception {
-
-    }
-
-
     public void testGetPlaylist() throws Exception {
-
+        assertNotNull(instance.getPlaylist());
+        assertNotNull(instance.getPlaylist().getElementAt(0));
     }
 
-    public void testGetEqualizer() throws Exception {
-
-    }
-
-    public void testGetPlaybackOrder() throws Exception {
-
-    }
-
-    public void testSetPlaybackOrder1() throws Exception {
-
-    }
 
     public void testGetState() throws Exception {
         assertEquals(MP3Player.PlayerState.STATE_NO_FILE, instance.getState());
@@ -149,7 +120,5 @@ public class MP3PlayerTest extends TestCase {
 
     }
 
-    public void testGetSongTotalTimeMs() throws Exception {
-
-    }
+    
 }
