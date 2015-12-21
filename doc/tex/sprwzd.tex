@@ -56,7 +56,7 @@
      {\small Prowadzący:}\\
  
          {prof. dr hab. Barbara Siemiątkowska}\\	
-         {mgr. inż Irina Gorbenko}
+         {mgr. inż Iryna Gorbenko}
 
      \end{flushright}
 
@@ -210,7 +210,58 @@ wybrania nowej głośności (w procentach) i kliknięcia przycisku ,,Change volu
  \label{fig:editor}
 \end{figure}
 
+\section{Testy aplikacji}
+Testy aplikacji przeprowadzono za pomocą frameworku JUnit z wykorzystaniem narzędzi opakowujących funkcjonalność JUnit wbudowanych w środowisko IntelliJ IDEA. Ze względu na specyfikę projektu 
+nie było możliwe przetestowanie sensu stricte wszystkich funkcjonalności. Przeprowadzono testy następujących klas:
+\begin{itemize}
+ \item Editor
+ \item MP3Player
+ \item PlaylistItemRenderer
+ \item PlaylistItem
+ \item Playlist
+\end{itemize}
 
+\subsection{Testy jednostkowe klasy Editor}
+\subsubsection{Metoda convertMP3ToWav()}
+W ramach testu konwertowano dany plik MP3 na plik WAVE o podanej nazwie a następnie za pomocą metod assertTrue sprawdzano czy plik istnieje, czy jest plikiem oraz czy jego rozszerzenie jest ,,wav``
+\subsubsection{Metoda convertWavToMP3()}
+Przebieg testu jest identyczny jak metody convertMP3ToWav.
+\subsubsection{Metoda loadSong()}
+W ramach testu wywołano metodę podając za argument plik testowy. Nie korzystano z metod asercji JUnit - powodzenie testu oznacza brak wyrzuconych wyjątków.
+\subsubsection{Metody edycyjne}
+Metody edycyjne przetestowano wywołując je na poprawnie załadowanym pliku. Powodzenie testu zależy od braku wyjątków.
+
+\subsection{Testy jednostkowe klasy MP3Player}
+Do celów testowych w metodzie setUp utworzono instancję klasy MP3Player, dodano jej instancję Playlist oraz dodano do niej dwie przykładowe piosenki.
+\subsubsection{Metoda addListener()}
+W ramach testu utworzono i dodano anonimową implementację interfejsu PlayerEventListener a następnie za pomocą funkcji assertNotNull sprawdzono, czy instancja klasy MP3Player rzeczywiście posiada
+dodany PlayerEventListener.
+\subsubsection{Metody sterowania odtwarzaniem}
+Testy metod pauseSong(), stopSong(), resumeSong() opierały się na podobnym schemacie. Uruchomiono odtwarzanie, programowo odczekano 100ms a następnie wywoływano testową metodę i za pomocą 
+metody assertEquals sprawdzano, czy stan odtwarzania jest odpowiedni.
+\subsubsection{Metody set i get}
+Testy metod typu set i get polegały na ustawieniu danego pola za pomocą metody set na znany obiekt a następnie asercji, że metoda get zwraca ten obiekt.
+
+\subsection{Testy jednostkowe klasy PlaylistItemRenderer}
+\subsubsection{Metoda getListCellRendererComponent()}
+Przeprowadzono dwa testy tej metody, dla piosenki posiadającej metadane oraz dla piosenki bez metadanych. Nie korzystano z asercji.
+\subsubsection{Metoda getScaledImage()}
+Za pomocą asercji assertNotNull sprawdzono, czy skalowanie testowego obrazu nie zwraca wskaźnika pustego.
+
+\subsection{Testy jednostkowe klasy Playlist}
+W ramach metody setUp() przygotowano testową listę odtwarzania z trzema przykładowymi pozycjami.
+\subsubsection{Metody modyfikacji zawartości}
+Metody modyfikacji zawartości przetestowano wywowując je na przykładowych instancjach PlaylistItem, sprawdzając za pomocą metody assertEquals czy rezultaty metod są zgodne z oczekiwaniami
+\subsubsection{Metoda getSize()}
+Sprawdzono, czy metoda zwraca odpowiedni rozmiar dla niepustej listy oraz czy zwraca 0 dla nowoutworzonej instancji Playlist. 
+\subsubsection{Metody manipulacji indeksem aktualnej piosenki}
+Metody pobrania, ustawienia, inkrementacji i dekrementacji indeksu aktualnej piosenki sprawdzano wywołując te metody i sprawdzając ich rezultat za pomocą assertEquals. Ponadto sprawdzono, czy
+dla nowoutworzonej instancji Playlist indeks aktualnej piosenki równa się -1.
+
+\subsection{Testy jednostkowe klasy PlaylistItem}
+W ramach metody setUp() przygotowano dwie instancje testowe: jedną utworzoną za pomocą pliku muzycznego bez metadanych, drugą z metadanymi.
+Zestaw testów sprawdzał za pomocą metody assertEquals czy metadane załadowane przez konstruktor klasy PlaylistItem są zgodne z rzeczywistymi metadanymi plików testowych. Ponadto sprawdzono 
+zachowanie metod get dla instancji utworzonej z pliku bez metadanych.
 
 \section{Schemat klas}
 Na rysunku \ref{fig:diagram} zawarto schemat klas wg standardu UML, wygenerowany za pomocą narzędzi wbudowanych w środowisko IntelliJ IDEA.

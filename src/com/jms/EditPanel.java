@@ -1,6 +1,7 @@
 package com.jms;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
@@ -123,8 +124,7 @@ public class EditPanel extends JPanel {
                     this.editor.loadSong(new File("temp.wav"));
                     log.append("File converted from MP3 to WAVE format.");
                     console.setText(log.toString());
-                }
-                else
+                } else
                     this.editor.loadSong(file);
                 buttonMute.setEnabled(true);
 
@@ -137,21 +137,31 @@ public class EditPanel extends JPanel {
 
         buttonSave.addActionListener(e1 -> {
             JFileChooser fc = new JFileChooser();
+            String filename ="";
+            fc.addChoosableFileFilter(new FileNameExtensionFilter("MP3", "mp3"));
+//            fc.addChoosableFileFilter(new FileNameExtensionFilter("WAVE", "wav"));
+            fc.setAcceptAllFileFilterUsed(false);
+//            FileFilter filter = new FileNameExtensionFilter("MP3 file", new String[]{"mp3"});
+//            fc.setFileFilter(filter);
             int retval = fc.showSaveDialog(this);
             if (retval == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
+                if (fc.getFileFilter().getDescription().equals("MP3")) {
+                    filename = file.getAbsolutePath();
+                    if (!filename.endsWith("mp3"))
+                        filename += ".mp3";
+                    this.editor.saveSong(filename);
+                }
 
-                this.editor.saveSong(file.getAbsolutePath());
                 File temp = new File("temp.wav");
-                if(temp.exists())
-                {
+                if (temp.exists()) {
                     temp.delete();
                 }
                 buttonMute.setEnabled(false);
 
                 buttonVolume.setEnabled(false);
                 buttonCut.setEnabled(false);
-                log.append("Saved file: " + file.getAbsolutePath() + "\n");
+                log.append("Saved file: " + filename + "\n");
                 console.setText(log.toString());
             }
         });
