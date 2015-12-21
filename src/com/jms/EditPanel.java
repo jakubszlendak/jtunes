@@ -139,19 +139,28 @@ public class EditPanel extends JPanel {
             JFileChooser fc = new JFileChooser();
             String filename ="";
             fc.addChoosableFileFilter(new FileNameExtensionFilter("MP3", "mp3"));
-//            fc.addChoosableFileFilter(new FileNameExtensionFilter("WAVE", "wav"));
+            fc.addChoosableFileFilter(new FileNameExtensionFilter("WAVE", "wav"));
+
             fc.setAcceptAllFileFilterUsed(false);
 //            FileFilter filter = new FileNameExtensionFilter("MP3 file", new String[]{"mp3"});
 //            fc.setFileFilter(filter);
             int retval = fc.showSaveDialog(this);
             if (retval == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-                if (fc.getFileFilter().getDescription().equals("MP3")) {
+                if (fc.getFileFilter().getDescription().equals("MP3"))
+                {
                     filename = file.getAbsolutePath();
                     if (!filename.endsWith("mp3"))
                         filename += ".mp3";
-                    this.editor.saveSong(filename);
                 }
+                if (fc.getFileFilter().getDescription().equals("WAVE"))
+                {
+                    filename = file.getAbsolutePath();
+                    if (!filename.endsWith("wav"))
+                        filename += ".wav";
+                }
+
+                this.editor.saveSong(filename);
 
                 File temp = new File("temp.wav");
                 if (temp.exists()) {

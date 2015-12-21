@@ -419,10 +419,19 @@ public class Editor
         FileOutputStream outputStream = null;
         try
         {
-            outputStream = new FileOutputStream("temp.wav");
-            outputStream.write(this.rawData);
-            outputStream.close();
-            convertWavToMP3("temp.wav", filePath);
+            if(filePath.endsWith("mp3")) {
+                outputStream = new FileOutputStream("temp.wav");
+                outputStream.write(this.rawData);
+                outputStream.close();
+                convertWavToMP3("temp.wav", filePath);
+            }
+            else if(filePath.endsWith("wav"))
+            {
+                outputStream = new FileOutputStream(filePath);
+                outputStream.write(this.rawData);
+                outputStream.close();
+            }
+
 
         } catch (FileNotFoundException e)
         {
